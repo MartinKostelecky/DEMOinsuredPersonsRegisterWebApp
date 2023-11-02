@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs-cz" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/layout.html :: head}"></head>
+<body>
+<nav th:replace="~{fragments/layout.html :: nav}"></nav>
+<div class="container-fluid" style="margin-top:80px">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <div class="text-center">
+                <h1>Přidat pojištění k <span th:text = "${insuredPerson.name}"></span></h1>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/insuredpersons/detail/{id} (id=${insuredPerson.id})}" th:object = ${individualInsurance} method="POST">
+                    <div class="form-group">
+                        <label for="type_of_insurance">Druh pojištění</label>
+                        <select th:field="*{type}" class="form-control" id="type_of_insurance">
+                            <option value="Pojištění zdraví">Pojištění zdraví</option>
+                            <option value="Pojištění majetku">Pojištění majetku</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pojistná částka</label>
+                        <input
+                                type="number"
+                                name="amount"
+                                th:field="*{amount}"
+                                placeholder="Pojistná částka"
+                                class="form-control"
+                                th:errorClass="is-invalid"
+                        />
+                        <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Předmět pojištění</label>
+                        <input
+                                type="text"
+                                name="subjectOfInsurance"
+                                th:field="*{subjectOfInsurance}"
+                                placeholder="Předmět pojištění"
+                                class="form-control"
+                                th:errorClass="is-invalid"
+                        />
+                        <div th:if="${#fields.hasErrors('subjectOfInsurance')}" th:errors="*{subjectOfInsurance}" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Platnost od</label>
+                        <input
+                                type="date"
+                                name="validFrom"
+                                th:field="*{validFrom}"
+                                class="form-control"
+                                th:errorClass="is-invalid"
+                        />
+                        <div th:if="${#fields.hasErrors('validFrom')}" th:errors="*{validFrom}" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Platnost do</label>
+                        <input
+                                type="date"
+                                name="validTo"
+                                th:field="*{validTo}"
+                                class="form-control"
+                                th:errorClass="is-invalid"
+                        />
+                        <div th:if="${#fields.hasErrors('validTo')}" th:errors="*{validTo}" class="text-danger"></div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">
+                            Uložit
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <footer th:replace="~{fragments/layout.html :: footer}"></footer>
+</div>
+</body>
+</html>

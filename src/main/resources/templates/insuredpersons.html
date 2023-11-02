@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="cs-cz" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/layout.html :: head}"></head>
+<body>
+<nav th:replace="~{fragments/layout.html :: nav}"></nav>
+    <div class="container-fluid" style="margin-top:80px">
+        <div class="row">
+            <div class="col-lg-10 col-md-6 col-sm-6 container justify-content-center">
+                <div class="text-center">
+                    <h1>Výpis pojištěnců</h1>
+                </div>
+                <div class="container-fluid">
+                    <a th:href="@{/insuredpersons/new}" class="btn btn-primary btn-sm mb-3">Vložit nového pojištěnce</a>
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Jméno a příjmení</th>
+                                <th scope="col">Ulice</th>
+                                <th scope="col">Město</th>
+                                <th scope="col">E-mail</th>
+                                <th scope="col">Telefonní číslo</th>
+                                <th scope="col">Volba</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each = "insuredPerson: ${insuredPersons}">
+                                <td>
+                                    <a th:text = "${insuredPerson.name}" th:href = "@{/insuredpersons/detail/{id} (id=${insuredPerson.id})}"></a>
+                                </td>
+                                <td th:text = "${insuredPerson.street}"></td>
+                                <td th:text = "${insuredPerson.city}"></td>
+                                <td th:text = "${insuredPerson.email}"></td>
+                                <td th:text = "${insuredPerson.phoneNumber}"></td>
+                                <td>
+                                    <a th:href = "@{/insuredpersons/edit/{id} (id=${insuredPerson.id})}" class="btn btn-warning">Upravit</a>
+                                    <a th:href = "@{/insuredpersons/{id} (id=${insuredPerson.id})}" class="btn btn-danger">Vymazat</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <footer th:replace="~{fragments/layout.html :: footer}"></footer>
+    </div>
+</body>
+</html>

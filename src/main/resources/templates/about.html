@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="cs-cz" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/layout.html :: head}"></head>
+<body>
+<nav th:replace="~{fragments/layout.html :: nav}"></nav>
+<div class="container-fluid" style="margin-top:80px">
+    <div class="row">
+        <div class="col-lg-10 col-md-6 col-sm-6 container justify-content-center">
+            <div class="text-center">
+                <h1>O aplikaci</h1>
+            </div>
+            <div>
+                <p>Demo aplikace evidence pojištěných a jejich pojištění. Použité technologie a rozhraní:
+                    Java 20, JPA, Spring a Spring boot, Hibernate, Thymeleaf, Bootstrap a HTML5. </p>
+                <p> Autor: <strong>Martin Kostelecký</strong></p>
+                <p>
+                    <img th:src="@{/img/5340267_e_email_letter_mail_icon.png}"/> kosteleckymartin@gmail.com
+                </p>
+                <p>
+                    <img th:src="@{/img/5340287_man_people_person_user_users_icon.png}"/>
+                    <a href="https://cz.linkedin.com/in/martin-kosteleck%C3%BD-83a80458?trk=people-guest_people_search-card">
+                        Profil na LinkedIn</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <footer th:replace="~{fragments/layout.html :: footer}"></footer>
+</div>
+</body>
+</html>

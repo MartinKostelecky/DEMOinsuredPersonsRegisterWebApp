@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="cs-cz" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/layout.html :: head}"></head>
+<body>
+<nav th:replace="~{fragments/layout.html :: nav}"></nav>
+<div class="container-fluid" style="margin-top:80px">
+    <div class="row">
+        <div class="col-lg-10 col-md-6 col-sm-6 container justify-content-center">
+            <div class="text-center">
+                <h1>Detail pojištěnce</h1>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 text-center" style="border:1px solid #ddd">
+                        <img class="img-fluid" width="200px" height="150px" th:src="@{/img/avatar.png}" alt="Personal photo avatar">
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6" style="border:1px solid #ddd">
+                        <h4>Jméno a příjmení:</h4>
+                        <p th:text = "${insuredPerson.name}"></p>
+                        <table class="table table-striped table-responsive-xl table-responsive-lg
+                        table-responsive-md table-responsive-sm">
+                            <tr>
+                                <td>
+                                    <p><strong>Adresa:</strong></p>
+                                    <p th:text = "${insuredPerson.street}"></p>
+                                </td>
+
+                                <td>
+                                    <p><strong>E-mail:</strong></p>
+                                    <p th:text = "${insuredPerson.email}"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p><strong>Město:</strong></p>
+                                    <p th:text = "${insuredPerson.city}"></p>
+                                </td>
+                                <td>
+                                    <p><strong>Telefonní číslo:</strong></p>
+                                    <p th:text = "${insuredPerson.phoneNumber}"></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+                <h3>Sjednaná pojištění</h3>
+            <div class="container-fluid">
+                <div class="row">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Pojištění</th>
+                            <th scope="col">Pojistná částka</th>
+                            <th scope="col">Předmět pojištění</th>
+                            <th scope="col">Volba</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each = "individualInsurance: ${allInsurance}">
+                            <td th:text = "${individualInsurance.type}"></td>
+                            <td th:text = "${individualInsurance.amount}"></td>
+                            <td th:text = "${individualInsurance.subjectOfInsurance}"></td>
+                            <td>
+                                <a th:href = "@{/insuredpersons/detail/{idPerson}/edit/{idInsurance} (idPerson=${insuredPerson.id},
+                                idInsurance=${individualInsurance.id})}"
+                                   class="btn btn-warning">Upravit</a>
+                                <a th:href = "@{/insuredpersons/detail/{idPerson}/insurance/{idInsurance}(idPerson=${insuredPerson.id},
+                                idInsurance=${individualInsurance.id})}" class="btn btn-danger">Vymazat</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row justify-content-around">
+                    <a th:href = "@{/insuredpersons/new/{id} (id=${insuredPerson.id})}" class="btn btn-primary btn-sm mb-3">Přidat pojištění</a>
+                    <a th:href = "@{/insuredpersons/edit/{id} (id=${insuredPerson.id})}" class="btn btn-warning btn-sm mb-3">Upravit pojištěnce</a>
+                    <a th:href = "@{/insuredpersons/{id} (id=${insuredPerson.id})}" class="btn btn-danger btn-sm mb-3">Vymazat pojištěnce</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <footer th:replace="~{fragments/layout.html :: footer}"></footer>
+</div>
+</body>
+</html>
