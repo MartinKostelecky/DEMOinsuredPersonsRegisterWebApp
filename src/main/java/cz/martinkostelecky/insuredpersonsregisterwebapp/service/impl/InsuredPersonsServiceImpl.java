@@ -8,9 +8,11 @@ import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPerson
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.InsuredPersonsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation class of Insured person methods
@@ -45,16 +47,21 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      */
     @Override
     public InsuredPerson saveInsuredPerson(InsuredPerson insuredPerson) {
+        Boolean existsEmail = insuredPersonRepository.existsByEmail(insuredPerson.getEmail());
+        if(existsEmail) {
+            throw new ApiRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
+        }
         return insuredPersonRepository.save(insuredPerson);
     }
     /**
-     * Finds Insured person by id
+     * Finds Insured person by id or return null if not found
      * @param id id of Insured person
      * @return Insured person by id
      */
     @Override
     public InsuredPerson getInsuredPersonById(Long id) {
-        return insuredPersonRepository.findById(id).get();
+        Optional<InsuredPerson> optionalInsuredPerson = insuredPersonRepository.findById(id);
+        return optionalInsuredPerson.orElse(null);
     }
     /**
      * Update of Insured person

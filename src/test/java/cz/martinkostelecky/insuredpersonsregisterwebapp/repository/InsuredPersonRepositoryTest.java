@@ -29,7 +29,8 @@ class InsuredPersonRepositoryTest {
                 "Nová 1",
                 "Praha",
                 email,
-                "000000000");
+                "000000000"
+        );
 
         insuredPersonRepositoryTest.save(insuredPerson);
         //when

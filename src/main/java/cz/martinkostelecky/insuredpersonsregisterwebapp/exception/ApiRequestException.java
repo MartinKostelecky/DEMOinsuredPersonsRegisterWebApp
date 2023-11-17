@@ -1,6 +1,6 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.exception;
 
-public class ApiRequestException extends RuntimeException{
+public class ApiRequestException extends RuntimeException {
     /**
      * Constructs a new runtime exception with the specified detail message.
      * @param message the detail message.
