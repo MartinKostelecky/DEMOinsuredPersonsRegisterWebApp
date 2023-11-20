@@ -119,8 +119,9 @@ class InsuredPersonsServiceImplTest {
                 "jan@novak.cz",
                 "000000000"
         );
+        //when(...): sets up an expectation for a method call on the mock object
         //if exists an entry in database by id then return optional type (used to represent a value
-        // that may or may not be present) of InsuredPerson
+        //that may or may not be present) of InsuredPerson
         when(insuredPersonRepository.findById(id)).thenReturn(Optional.of(expectedInsuredPerson));
         //when
         //get actual insured person from repo by id
@@ -144,8 +145,60 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    @Disabled
-    void updateInsuredPerson() {
+    void canUpdateInsuredPerson() {
+        //given
+
+        //instance of Insured person we want to update
+        InsuredPerson toUpdateInsuredPerson = new InsuredPerson();
+        toUpdateInsuredPerson.setId(1L);
+        toUpdateInsuredPerson.setName("Adam Novák");
+        toUpdateInsuredPerson.setStreet("Nová 3");
+        toUpdateInsuredPerson.setCity("Brno");
+        toUpdateInsuredPerson.setEmail("adam@novak.cz");
+        toUpdateInsuredPerson.setPhoneNumber("111111111");
+
+        //instance of existing Insured person
+        InsuredPerson existingInsuredPerson = new InsuredPerson();
+        existingInsuredPerson.setId(1L);
+        existingInsuredPerson.setName("Jan Nový");
+        existingInsuredPerson.setStreet("Nová 1");
+        existingInsuredPerson.setCity("Praha");
+        existingInsuredPerson.setEmail("jan@novy.cz");
+        existingInsuredPerson.setPhoneNumber("000000000");
+
+        when(insuredPersonRepository.findById(1L)).thenReturn(Optional.of(existingInsuredPerson));
+        //save(argThat(...)): specifies the expected method call (save) with an argument that matches the provided argThat matcher.
+        //The argThat matcher allows you to define a custom argument matcher.
+        //thenAnswer(...): Specifies the behavior to be executed when the specified method is called. In this case,
+        //it uses a lambda expression to return the argument passed to the save method (invocation.getArgument(0)).
+        //This is a way to simulate the behavior of the save method by returning the InsuredPerson that was passed to it.
+        //without actually persisting it to the database during the test.
+        when(insuredPersonRepository.save(argThat(insuredPerson ->
+                        "Adam Novák".equals(insuredPerson.getName()) &&
+                        "Nová 3".equals(insuredPerson.getStreet()) &&
+                        "Brno".equals(insuredPerson.getCity()) &&
+                        "adam@novak.cz".equals(insuredPerson.getEmail()) &&
+                        "111111111".equals(insuredPerson.getPhoneNumber())
+        ))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        //when
+        InsuredPerson updatedInsuredPerson = insuredPersonsServiceTest.updateInsuredPerson(toUpdateInsuredPerson);
+
+        //then
+        verify(insuredPersonRepository).save(argThat(insuredPerson ->
+                "Adam Novák".equals(insuredPerson.getName()) &&
+                "Nová 3".equals(insuredPerson.getStreet()) &&
+                "Brno".equals(insuredPerson.getCity()) &&
+                "adam@novak.cz".equals(insuredPerson.getEmail()) &&
+                "111111111".equals(insuredPerson.getPhoneNumber())
+        ));
+
+        assertThat(updatedInsuredPerson.getId()).isEqualTo(1L);
+        assertThat(updatedInsuredPerson.getName()).isEqualTo("Adam Novák");
+        assertThat(updatedInsuredPerson.getStreet()).isEqualTo("Nová 3");
+        assertThat(updatedInsuredPerson.getCity()).isEqualTo("Brno");
+        assertThat(updatedInsuredPerson.getEmail()).isEqualTo("adam@novak.cz");
+        assertThat(updatedInsuredPerson.getPhoneNumber()).isEqualTo("111111111");
     }
 
     @Test

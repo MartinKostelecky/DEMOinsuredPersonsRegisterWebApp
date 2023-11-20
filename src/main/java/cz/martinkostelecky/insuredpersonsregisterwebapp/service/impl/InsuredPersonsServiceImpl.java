@@ -6,6 +6,7 @@ import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.ApiRequestExce
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPersonRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.InsuredPersonsService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.client.HttpClientErrorException;
@@ -70,14 +71,27 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      */
     @Override
     public InsuredPerson updateInsuredPerson(InsuredPerson insuredPerson) {
-        InsuredPerson existingInsuredPerson = insuredPersonRepository.findById(insuredPerson.getId()).get();
-        existingInsuredPerson.setId(insuredPerson.getId());
-        existingInsuredPerson.setName(insuredPerson.getName());
-        existingInsuredPerson.setStreet(insuredPerson.getStreet());
-        existingInsuredPerson.setCity(insuredPerson.getCity());
-        existingInsuredPerson.setEmail(insuredPerson.getEmail());
-        existingInsuredPerson.setPhoneNumber(insuredPerson.getPhoneNumber());
-        return insuredPersonRepository.save(existingInsuredPerson);
+        Optional<InsuredPerson> optionalExistingInsuredPerson = insuredPersonRepository.findById(insuredPerson.getId());
+        Boolean existsEmail = insuredPersonRepository.existsByEmail(insuredPerson.getEmail());
+        //get existing Insured person and update it if there is any
+        if (optionalExistingInsuredPerson.isPresent()) {
+            InsuredPerson existingInsuredPerson = optionalExistingInsuredPerson.get();
+            existingInsuredPerson.setId(insuredPerson.getId());
+            existingInsuredPerson.setName(insuredPerson.getName());
+            existingInsuredPerson.setStreet(insuredPerson.getStreet());
+            existingInsuredPerson.setCity(insuredPerson.getCity());
+            //check if updated e-mail doesn´t belong to another Insured person
+            if(existsEmail) {
+                throw new ApiRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
+            } else {
+                existingInsuredPerson.setEmail(insuredPerson.getEmail());
+            }
+            existingInsuredPerson.setPhoneNumber(insuredPerson.getPhoneNumber());
+            return insuredPersonRepository.save(existingInsuredPerson);
+        } else {
+            // Handle the case where the InsuredPerson with the given ID is not found
+            throw new EntityNotFoundException("Pojištěnec s ID: " + insuredPerson.getId() + " nenalezen.");
+        }
     }
     /**
      * Delete Insured person by id
