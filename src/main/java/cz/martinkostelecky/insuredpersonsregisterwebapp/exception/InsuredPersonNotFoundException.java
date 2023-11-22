@@ -1,11 +1,11 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.exception;
 
-public class ApiRequestException extends RuntimeException {
+public class InsuredPersonNotFoundException extends RuntimeException {
     /**
      * Constructs a new runtime exception with the specified detail message.
      * @param message the detail message.
      */
-    public ApiRequestException(String message) {
+    public InsuredPersonNotFoundException(String message) {
         super(message);
     }
     /**
@@ -15,7 +15,7 @@ public class ApiRequestException extends RuntimeException {
      * @param cause   the cause
      * @since 1.4
      */
-    public ApiRequestException(String message, Throwable cause) {
+    public InsuredPersonNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }

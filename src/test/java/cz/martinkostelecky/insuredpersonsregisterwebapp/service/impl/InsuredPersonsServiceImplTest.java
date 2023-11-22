@@ -1,25 +1,22 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
-import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.ApiRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.BadRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPersonRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -100,7 +97,7 @@ class InsuredPersonsServiceImplTest {
         //when
         //then
         assertThatThrownBy(() -> insuredPersonsServiceTest.saveInsuredPerson(insuredPerson))
-                .isInstanceOf(ApiRequestException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
 
         verify(insuredPersonRepository, never()).save(insuredPerson);
@@ -202,9 +199,50 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    @Disabled
-    void deleteInsuredPerson() {
+    void willThrowExceptionInsuredPersonNotFound() {
+        //given
+        InsuredPerson insuredPerson = new InsuredPerson(
+                1L,
+                "Jan Novák",
+                "Nová 1",
+                "Praha",
+                "jan@novak.cz",
+                "000000000"
+        );
+        when(insuredPersonRepository.findById(insuredPerson.getId())).thenReturn(Optional.empty());
+        //when
+
+        //then
+        assertThatThrownBy(() -> insuredPersonsServiceTest.updateInsuredPerson(insuredPerson))
+                .isInstanceOf(InsuredPersonNotFoundException.class)
+                .hasMessageContaining("Pojištěnec s ID: " + insuredPerson.getId() + " nenalezen.");
+
+        verify(insuredPersonRepository, never()).save(insuredPerson);
     }
+
+    @Test
+    void shouldDeleteInsuredPerson() {
+        //given
+        InsuredPerson insuredPerson = new InsuredPerson(
+                1L,
+                "Jan Novák",
+                "Nová 1",
+                "Praha",
+                "jan@novak.cz",
+                "000000000"
+        );
+        // Mock the behavior of the repository's deleteById method
+        doNothing().when(insuredPersonRepository).deleteById(insuredPerson.getId());
+        //when
+        //then
+
+        assertThatCode(() -> insuredPersonsServiceTest.deleteInsuredPerson(insuredPerson.getId()))
+                .doesNotThrowAnyException();
+        //verify if repository´s method deleteById was called with ID eq = equal to ID of Insured person,
+        //times(1) = do it once
+        verify(insuredPersonRepository, times(1)).deleteById(eq(insuredPerson.getId()));
+    }
+
 
     @Test
     @Disabled

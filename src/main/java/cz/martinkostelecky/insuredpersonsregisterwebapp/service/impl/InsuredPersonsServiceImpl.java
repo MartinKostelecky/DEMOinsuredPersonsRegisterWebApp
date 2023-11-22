@@ -2,14 +2,12 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
-import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.ApiRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.BadRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPersonRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.InsuredPersonsService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +48,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
     public InsuredPerson saveInsuredPerson(InsuredPerson insuredPerson) {
         Boolean existsEmail = insuredPersonRepository.existsByEmail(insuredPerson.getEmail());
         if(existsEmail) {
-            throw new ApiRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
+            throw new BadRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
         }
         return insuredPersonRepository.save(insuredPerson);
     }
@@ -82,7 +80,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
             existingInsuredPerson.setCity(insuredPerson.getCity());
             //check if updated e-mail doesn´t belong to another Insured person
             if(existsEmail) {
-                throw new ApiRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
+                throw new BadRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
             } else {
                 existingInsuredPerson.setEmail(insuredPerson.getEmail());
             }
@@ -90,7 +88,8 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
             return insuredPersonRepository.save(existingInsuredPerson);
         } else {
             // Handle the case where the InsuredPerson with the given ID is not found
-            throw new EntityNotFoundException("Pojištěnec s ID: " + insuredPerson.getId() + " nenalezen.");
+            throw new InsuredPersonNotFoundException("Pojištěnec s ID: " + insuredPerson.getId() + " nenalezen.");
+            //throw new EntityNotFoundException("Pojištěnec s ID: " + insuredPerson.getId() + " nenalezen.");
         }
     }
     /**
