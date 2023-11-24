@@ -78,8 +78,9 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
             existingInsuredPerson.setName(insuredPerson.getName());
             existingInsuredPerson.setStreet(insuredPerson.getStreet());
             existingInsuredPerson.setCity(insuredPerson.getCity());
-            //check if updated e-mail doesn´t belong to another Insured person
-            if(existsEmail) {
+            // check if updated person´s e-mail equals existing person´s e-mail and if the e-mail doesn´t
+            // belong to another Insured person
+            if(!existingInsuredPerson.getEmail().equals(insuredPerson.getEmail()) && existsEmail) {
                 throw new BadRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
             } else {
                 existingInsuredPerson.setEmail(insuredPerson.getEmail());
@@ -117,19 +118,13 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      */
     @Override
     public Insurance saveInsurance(Insurance insurance, InsuredPerson insuredPerson) {
-        Insurance insuranceToSave = new Insurance();
         List<Insurance> allInsurance = new ArrayList<>();
 
-        insuranceToSave.setType(insurance.getType());
-        insuranceToSave.setAmount(insurance.getAmount());
-        insuranceToSave.setSubjectOfInsurance(insurance.getSubjectOfInsurance());
-        insuranceToSave.setValidFrom(insurance.getValidFrom());
-        insuranceToSave.setValidTo(insurance.getValidTo());
-        insuranceToSave.setInsuredPerson(insuredPerson);
+        insurance.setInsuredPerson(insuredPerson);
         allInsurance.add(insurance);
         insuredPerson.setAllInsurance(allInsurance);
 
-        return insuranceRepository.save(insuranceToSave);
+        return insuranceRepository.save(insurance);
     }
     /**
      * Find insurance by id

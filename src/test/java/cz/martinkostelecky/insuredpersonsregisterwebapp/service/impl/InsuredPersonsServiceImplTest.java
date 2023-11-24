@@ -1,5 +1,6 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 
+import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.BadRequestException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
@@ -242,16 +244,46 @@ class InsuredPersonsServiceImplTest {
         //times(1) = do it once
         verify(insuredPersonRepository, times(1)).deleteById(eq(insuredPerson.getId()));
     }
-
-
     @Test
-    @Disabled
-    void getAllInsurance() {
+    void canGetAllInsurance() {
+        //when
+        insuredPersonsServiceTest.getAllInsurance();
+        //then
+        verify(insuranceRepository).findAll();
     }
 
     @Test
-    @Disabled
     void saveInsurance() {
+        //given
+        Insurance insurance = new Insurance(
+                1L,
+                "Pojištění zdraví",
+                1000000,
+                "Životní pojištění",
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 1, 31)
+        );
+
+        InsuredPerson insuredPerson = new InsuredPerson(
+                1L,
+                "Jan Novák",
+                "Nová 1",
+                "Praha",
+                "jan@novak.cz",
+                "000000000"
+        );
+
+        //when
+        insuredPersonsServiceTest.saveInsurance(insurance, insuredPerson);
+
+        //then
+        ArgumentCaptor<Insurance> insuranceArgumentCaptor = ArgumentCaptor.forClass(Insurance.class);
+        //verify if repository saves argument captured by ArgumentCaptor
+        verify(insuranceRepository).save(insuranceArgumentCaptor.capture());
+
+        Insurance capturedInsurance = insuranceArgumentCaptor.getValue();
+
+        assertThat(capturedInsurance).isEqualTo(insurance);
     }
 
     @Test
