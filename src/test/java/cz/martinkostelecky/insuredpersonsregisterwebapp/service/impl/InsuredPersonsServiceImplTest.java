@@ -393,8 +393,25 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    @Disabled
     void deleteInsurance() {
-    }
+        //given
+        Insurance insurance = new Insurance(
+                1L,
+                "Pojištění zdraví",
+                1000000,
+                "Životní pojištění",
+                LocalDate.of(2023, 12, 1),
+                LocalDate.of(2023, 12, 31)
+        );
+        // Mock the behavior of the repository's deleteById method
+        doNothing().when(insuranceRepository).deleteById(insurance.getId());
+        //when
+        //then
 
+        assertThatCode(() -> insuredPersonsServiceTest.deleteInsurance(insurance.getId()))
+                .doesNotThrowAnyException();
+        //verify if repository´s method deleteById was called with ID eq = equal to ID of Insured person,
+        //times(1) = do it once
+        verify(insuranceRepository, times(1)).deleteById(eq(insurance.getId()));
+    }
 }
