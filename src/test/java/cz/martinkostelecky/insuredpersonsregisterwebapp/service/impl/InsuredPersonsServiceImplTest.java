@@ -3,6 +3,7 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.BadRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuranceNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPersonRepository;
@@ -127,7 +128,7 @@ class InsuredPersonsServiceImplTest {
         InsuredPerson actualInsuredPerson = insuredPersonsServiceTest.getInsuredPersonById(id);
 
         //then
-        //check if actual insured doesn´t point to null and check if equals to expected insured person
+        //check if actual Insured person doesn´t point to null and check if equals to expected insured person
         assertThat(actualInsuredPerson).isNotNull().isEqualTo(expectedInsuredPerson);
     }
     @Test
@@ -253,7 +254,7 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    void saveInsurance() {
+    void canSaveInsurance() {
         //given
         Insurance insurance = new Insurance(
                 1L,
@@ -287,20 +288,113 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    @Disabled
-    void getInsuranceById() {
+    void canGetInsuranceById() {
+        //given
+        //test id value
+        Long id = 1L;
+        Insurance expectedInsurance = new Insurance(
+                1L,
+                "Pojištění zdraví",
+                1000000,
+                "Životní pojištění",
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 1, 31)
+        );
+        //when(...): sets up an expectation for a method call on the mock object
+        //if exists an entry in database by id then return optional type (used to represent a value
+        //that may or may not be present) of Insurance
+        when(insuranceRepository.findById(id)).thenReturn(Optional.of(expectedInsurance));
+        //when
+        //get actual insurance from repo by id
+        Insurance actualInsurance = insuredPersonsServiceTest.getInsuranceById(id);
+
+        //then
+        //check if actual insurance doesn´t point to null and check if equals to expected insurance
+        assertThat(actualInsurance).isNotNull().isEqualTo(expectedInsurance);
     }
 
     @Test
-    @Disabled
-    void updateInsurance() {
+    void canUpdateInsurance() {
+        //given
+
+        //instance of Insurance we want to update
+        Insurance toUpdateInsurance = new Insurance();
+        toUpdateInsurance.setId(1L);
+        toUpdateInsurance.setType("Pojištění majetku");
+        toUpdateInsurance.setAmount(10000);
+        toUpdateInsurance.setSubjectOfInsurance("Dům");
+        toUpdateInsurance.setValidFrom(LocalDate.of(2024, 1, 1));
+        toUpdateInsurance.setValidTo(LocalDate.of(2024, 1, 31));
+
+        //instance of existing Insurance
+        Insurance existingInsurance = new Insurance();
+        existingInsurance.setId(1L);
+        existingInsurance.setType("Pojištění zdraví");
+        existingInsurance.setAmount(1000000);
+        existingInsurance.setSubjectOfInsurance("Životní pojištění");
+        existingInsurance.setValidFrom(LocalDate.of(2023, 12, 1));
+        existingInsurance.setValidTo(LocalDate.of(2023, 12, 31));
+
+        when(insuranceRepository.findById(1L)).thenReturn(Optional.of(existingInsurance));
+        //save(argThat(...)): specifies the expected method call (save) with an argument that matches the provided argThat matcher.
+        //The argThat matcher allows you to define a custom argument matcher.
+        //thenAnswer(...): Specifies the behavior to be executed when the specified method is called. In this case,
+        //it uses a lambda expression to return the argument passed to the save method (invocation.getArgument(0)).
+        //This is a way to simulate the behavior of the save method by returning the Insurance that was passed to it.
+        //without actually persisting it to the database during the test.
+        when(insuranceRepository.save(argThat(insurance ->
+                "Pojištění majetku".equals(insurance.getType()) &&
+                        Integer.valueOf(10000).equals(insurance.getAmount()) &&
+                        "Dům".equals(insurance.getSubjectOfInsurance()) &&
+                        LocalDate.of(2024, 1, 1).equals(insurance.getValidFrom()) &&
+                        LocalDate.of(2024, 1, 31).equals(insurance.getValidTo())
+        ))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        //when
+        Insurance updatedInsurance = insuredPersonsServiceTest.updateInsurance(toUpdateInsurance);
+
+        //then
+        verify(insuranceRepository).save(argThat(insurance ->
+                "Pojištění majetku".equals(insurance.getType()) &&
+                        Integer.valueOf(10000).equals(insurance.getAmount()) &&
+                        "Dům".equals(insurance.getSubjectOfInsurance()) &&
+                        LocalDate.of(2024, 1, 1).equals(insurance.getValidFrom()) &&
+                        LocalDate.of(2024, 1, 31).equals(insurance.getValidTo())
+        ));
+
+        assertThat(updatedInsurance.getId()).isEqualTo(1L);
+        assertThat(updatedInsurance.getType()).isEqualTo("Pojištění majetku");
+        assertThat(updatedInsurance.getAmount()).isEqualTo(10000);
+        assertThat(updatedInsurance.getSubjectOfInsurance()).isEqualTo("Dům");
+        assertThat(updatedInsurance.getValidFrom()).isEqualTo(LocalDate.of(2024, 1, 1));
+        assertThat(updatedInsurance.getValidTo()).isEqualTo(LocalDate.of(2024, 1, 31));
+    }
+
+    @Test
+    void willThrowExceptionInsuranceNotFound() {
+        //given
+        Insurance insurance = new Insurance(
+                1L,
+                "Pojištění zdraví",
+                1000000,
+                "Životní pojištění",
+                LocalDate.of(2023, 12, 1),
+                LocalDate.of(2023, 12, 31)
+        );
+        when(insuranceRepository.findById(insurance.getId())).thenReturn(Optional.empty());
+        //when
+
+        //then
+        assertThatThrownBy(() -> insuredPersonsServiceTest.updateInsurance(insurance))
+                .isInstanceOf(InsuranceNotFoundException.class)
+                .hasMessageContaining("Pojištění s ID: " + insurance.getId() + " nenalezeno.");
+
+        verify(insuranceRepository, never()).save(insurance);
     }
 
     @Test
     @Disabled
     void deleteInsurance() {
     }
-
-
 
 }

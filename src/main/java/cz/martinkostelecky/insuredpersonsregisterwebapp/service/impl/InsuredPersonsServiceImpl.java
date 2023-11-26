@@ -3,6 +3,7 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.BadRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuranceNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPersonRepository;
@@ -132,7 +133,9 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @return Insurance by id
      */
     @Override
-    public Insurance getInsuranceById(Long id) { return insuranceRepository.findById(id).get();
+    public Insurance getInsuranceById(Long id) {
+        Optional<Insurance> optionalInsurance = insuranceRepository.findById(id);
+        return optionalInsurance.orElse(null);
     }
     /**
      * Save updated Insurance
@@ -141,14 +144,22 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      */
     @Override
     public Insurance updateInsurance(Insurance insurance) {
-        Insurance existingInsurance = insuranceRepository.findById(insurance.getId()).get();
-        existingInsurance.setId(insurance.getId());
-        existingInsurance.setType(insurance.getType());
-        existingInsurance.setAmount(insurance.getAmount());
-        existingInsurance.setSubjectOfInsurance(insurance.getSubjectOfInsurance());
-        existingInsurance.setValidFrom(insurance.getValidFrom());
-        existingInsurance.setValidTo(insurance.getValidTo());
-        return insuranceRepository.save(existingInsurance);
+        Optional<Insurance> optionalExistingInsurance = insuranceRepository.findById(insurance.getId());
+
+        if(optionalExistingInsurance.isPresent()) {
+            Insurance existingInsurance = optionalExistingInsurance.get();
+            existingInsurance.setId(insurance.getId());
+            existingInsurance.setType(insurance.getType());
+            existingInsurance.setAmount(insurance.getAmount());
+            existingInsurance.setSubjectOfInsurance(insurance.getSubjectOfInsurance());
+            existingInsurance.setValidFrom(insurance.getValidFrom());
+            existingInsurance.setValidTo(insurance.getValidTo());
+            return insuranceRepository.save(existingInsurance);
+        } else {
+            // Handle the case where the InsuredPerson with the given ID is not found
+            throw new InsuranceNotFoundException("Pojištění s ID: " + insurance.getId() + " nenalezeno.");
+            //throw new EntityNotFoundException("Pojištění s ID: " + insurance.getId() + " nenalezeno.");
+        }
     }
     /**
      * Delete of Insurance by id
