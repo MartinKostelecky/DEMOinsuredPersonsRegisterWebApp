@@ -344,7 +344,7 @@ class InsuredPersonsServiceImplTest {
         //without actually persisting it to the database during the test.
         when(insuranceRepository.save(argThat(insurance ->
                 "Pojištění majetku".equals(insurance.getType()) &&
-                        Integer.valueOf(10000).equals(insurance.getAmount()) &&
+                        10000 == insurance.getAmount() &&
                         "Dům".equals(insurance.getSubjectOfInsurance()) &&
                         LocalDate.of(2024, 1, 1).equals(insurance.getValidFrom()) &&
                         LocalDate.of(2024, 1, 31).equals(insurance.getValidTo())
