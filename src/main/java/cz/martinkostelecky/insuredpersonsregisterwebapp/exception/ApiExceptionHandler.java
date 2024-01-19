@@ -10,8 +10,8 @@ import java.time.ZonedDateTime;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
-    @ExceptionHandler(value = BadRequestException.class)
-    public ResponseEntity<Object> handleBadRequestException (BadRequestException e) {
+    @ExceptionHandler(value = EmailAlreadyTakenException.class)
+    public ResponseEntity<Object> handleBadRequestException (EmailAlreadyTakenException e) {
         //Create payload containing exception details
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ApiException apiException = new ApiException(

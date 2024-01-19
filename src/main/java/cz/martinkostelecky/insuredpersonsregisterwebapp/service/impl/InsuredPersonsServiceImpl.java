@@ -2,7 +2,7 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
-import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.BadRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.EmailAlreadyTakenException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuranceNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
@@ -49,7 +49,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
     public InsuredPerson saveInsuredPerson(InsuredPerson insuredPerson) {
         Boolean existsEmail = insuredPersonRepository.existsByEmail(insuredPerson.getEmail());
         if(existsEmail) {
-            throw new BadRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
+            throw new EmailAlreadyTakenException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
         }
         return insuredPersonRepository.save(insuredPerson);
     }
@@ -82,7 +82,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
             // check if updated person´s e-mail equals existing person´s e-mail and if the e-mail doesn´t
             // belong to another Insured person
             if(!existingInsuredPerson.getEmail().equals(insuredPerson.getEmail()) && existsEmail) {
-                throw new BadRequestException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
+                throw new EmailAlreadyTakenException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
             } else {
                 existingInsuredPerson.setEmail(insuredPerson.getEmail());
             }

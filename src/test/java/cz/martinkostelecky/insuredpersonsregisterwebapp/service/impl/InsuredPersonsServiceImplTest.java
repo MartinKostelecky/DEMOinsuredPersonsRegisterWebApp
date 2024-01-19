@@ -2,13 +2,12 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
-import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.BadRequestException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.EmailAlreadyTakenException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuranceNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPersonRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -100,7 +99,7 @@ class InsuredPersonsServiceImplTest {
         //when
         //then
         assertThatThrownBy(() -> insuredPersonsServiceTest.saveInsuredPerson(insuredPerson))
-                .isInstanceOf(BadRequestException.class)
+                .isInstanceOf(EmailAlreadyTakenException.class)
                 .hasMessageContaining("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
 
         verify(insuredPersonRepository, never()).save(insuredPerson);

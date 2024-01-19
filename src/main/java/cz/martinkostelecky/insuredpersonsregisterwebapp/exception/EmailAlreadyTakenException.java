@@ -1,11 +1,11 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.exception;
 
-public class BadRequestException extends RuntimeException {
+public class EmailAlreadyTakenException extends RuntimeException {
     /**
      * Constructs a new runtime exception with the specified detail message.
      * @param message the detail message.
      */
-    public BadRequestException(String message) {
+    public EmailAlreadyTakenException(String message) {
         super(message);
     }
     /**
@@ -15,7 +15,7 @@ public class BadRequestException extends RuntimeException {
      * @param cause   the cause
      * @since 1.4
      */
-    public BadRequestException(String message, Throwable cause) {
+    public EmailAlreadyTakenException(String message, Throwable cause) {
         super(message, cause);
     }
 }
