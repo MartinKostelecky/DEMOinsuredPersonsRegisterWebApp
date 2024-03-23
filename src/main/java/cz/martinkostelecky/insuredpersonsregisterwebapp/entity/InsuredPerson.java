@@ -5,11 +5,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
  * Class representing Insured person
  */
+@Getter
+@Setter
 @Entity
 @Table(name="insuredPersons")
 public class InsuredPerson {
@@ -64,62 +69,7 @@ public class InsuredPerson {
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
-    /**
-     * Getters and setters
-     */
-    public Long getId() {
-        return id;
-    }
-    public String getName() {
-        return name;
-    }
-    public String getStreet() {
-        return street;
-    }
-    public String getCity() {
-        return city;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setStreet(String street) {
-        this.street = street;
-    }
-    public void setCity(String city) {
-        this.city = city;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-    public List<Insurance> getAllInsurance() {
-        return allInsurance;
-    }
-    public void setAllInsurance(List<Insurance> allInsurance) {
-        this.allInsurance = allInsurance;
-    }
-    @Override
-    public String toString() {
-        return "Insured person{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", street='" + street + '\'' +
-                ", city='" + city + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
-    }
+
 }
 
 
