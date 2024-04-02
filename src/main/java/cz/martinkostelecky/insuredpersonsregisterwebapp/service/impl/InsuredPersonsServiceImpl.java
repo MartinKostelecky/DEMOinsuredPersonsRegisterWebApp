@@ -135,7 +135,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
     @Override
     public Insurance getInsuranceById(Long id) {
         Optional<Insurance> optionalInsurance = insuranceRepository.findById(id);
-        return optionalInsurance.orElse(null);
+        return optionalInsurance.orElseThrow(() -> new InsuranceNotFoundException("Pojištění nenalezeno."));
     }
     /**
      * Save updated Insurance

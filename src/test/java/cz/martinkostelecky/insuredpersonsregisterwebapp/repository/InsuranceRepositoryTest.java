@@ -4,13 +4,16 @@ import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
+//TODO test funguje, ale je rozbité ukládání více pojištění, zkusit checkoutnout předchozí verzi a otestovat funkčnost
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class InsuranceRepositoryTest {
 
     @Autowired
