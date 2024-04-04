@@ -2,9 +2,9 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.controller;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
-import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.EmailAlreadyTakenException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.InsuredPersonsService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
  * Insured person controller class
  */
 @Controller
+@Slf4j
 public class InsuredPersonsController {
     /**
      * Class attributes
@@ -73,6 +74,7 @@ public class InsuredPersonsController {
             return "create_insuredperson";
         }
         insuredPersonsService.saveInsuredPerson(insuredPerson);
+        log.info("Insurance list of insured person id: " + insuredPerson.getId() + " created.");
         return "redirect:/insuredpersons";
     }
 
@@ -168,6 +170,8 @@ public class InsuredPersonsController {
             return "create_insurance";
         }
         insuredPersonsService.saveInsurance(insurance, insuredPerson);
+        log.info("Insurance saved.");
+        //??? log.info("Insured person id: " + insuredPerson.getId() + " Insurance list size: " + insuredPerson.getAllInsurance().size());
         return "redirect:/insuredpersons/detail/{id}";
     }
 
@@ -230,10 +234,10 @@ public class InsuredPersonsController {
         return "about";
     }
 
-    @GetMapping("/error")
+    /*@GetMapping("/error")
     public String errorPage() {
         //TODO nezobrazuje error stránku
         throw new EmailAlreadyTakenException("Tento email už patří někomu jinému.");
-    }
+    }*/
 }
 

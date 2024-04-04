@@ -21,24 +21,31 @@ public class Insurance {
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name="type")
     private String type;
+
     @Min(value = 100, message = "Pojistná částka musí být větší než 0.")
     @Column(name="amount")
     private int amount;
+
     @NotNull(message = "Zadejte předmět pojištění.")
     @NotBlank(message = "Zadejte předmět pojištění.")
     @Column(name="subjectOfInsurance")
     private String subjectOfInsurance;
+
     @NotNull(message = "Zadejte datum počátku pojištění.")
     @Column(name="validFrom")
     private LocalDate validFrom;
+
     @NotNull(message = "Zadejte datum konce pojištění.")
     @Column(name="validTo")
     private LocalDate validTo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="insuredperson_id")
     private InsuredPerson insuredPerson;
+
     /**
      * Default constructor
      */
