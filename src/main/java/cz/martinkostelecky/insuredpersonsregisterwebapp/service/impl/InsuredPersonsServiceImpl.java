@@ -52,7 +52,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @param insuredPerson
      */
     @Override
-    public void saveInsuredPerson(InsuredPerson insuredPerson) {
+    public void saveInsuredPerson(InsuredPerson insuredPerson) throws EmailAlreadyTakenException {
         Boolean existsEmail = insuredPersonRepository.existsByEmail(insuredPerson.getEmail());
         if (existsEmail) {
             throw new EmailAlreadyTakenException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
@@ -67,7 +67,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @return Insured person by id
      */
     @Override
-    public InsuredPerson getInsuredPersonById(Long id) {
+    public InsuredPerson getInsuredPersonById(Long id) throws InsuredPersonNotFoundException {
         Optional<InsuredPerson> optionalInsuredPerson = insuredPersonRepository.findById(id);
         return optionalInsuredPerson.orElseThrow(() -> new InsuredPersonNotFoundException("Pojištěný nenalezen."));
     }
@@ -79,7 +79,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @return save of Insured person
      */
     @Override
-    public InsuredPerson updateInsuredPerson(InsuredPerson insuredPerson) {
+    public InsuredPerson updateInsuredPerson(InsuredPerson insuredPerson) throws EmailAlreadyTakenException, InsuredPersonNotFoundException {
         Optional<InsuredPerson> optionalExistingInsuredPerson = insuredPersonRepository.findById(insuredPerson.getId());
         Boolean existsEmail = insuredPersonRepository.existsByEmail(insuredPerson.getEmail());
         //get existing Insured person and update it if there is any
@@ -145,7 +145,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @return Insurance by id
      */
     @Override
-    public Insurance getInsuranceById(Long id) {
+    public Insurance getInsuranceById(Long id) throws InsuranceNotFoundException {
         Optional<Insurance> optionalInsurance = insuranceRepository.findById(id);
         return optionalInsurance.orElseThrow(() -> new InsuranceNotFoundException("Pojištění nenalezeno."));
     }
@@ -156,7 +156,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @return save of Insurance
      */
     @Override
-    public Insurance updateInsurance(Insurance insurance) {
+    public Insurance updateInsurance(Insurance insurance) throws InsuranceNotFoundException {
         Optional<Insurance> optionalExistingInsurance = insuranceRepository.findById(insurance.getId());
 
         if (optionalExistingInsurance.isPresent()) {

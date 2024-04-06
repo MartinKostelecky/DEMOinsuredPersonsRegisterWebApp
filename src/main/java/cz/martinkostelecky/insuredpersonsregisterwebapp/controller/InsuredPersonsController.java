@@ -2,6 +2,9 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.controller;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Insurance;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.InsuredPerson;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.EmailAlreadyTakenException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuranceNotFoundException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.InsuredPersonsService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +31,6 @@ public class InsuredPersonsController {
 
     /**
      * Constructor
-     *
      * @param insuredPersonsService
      */
     public InsuredPersonsController(InsuredPersonsService insuredPersonsService) {
@@ -69,7 +71,7 @@ public class InsuredPersonsController {
      * @return redirects to insuredpersons page
      */
     @PostMapping("/insuredpersons")
-    public String saveInsuredPerson(@Valid @ModelAttribute("insuredPerson") InsuredPerson insuredPerson, BindingResult bindingResult) {
+    public String saveInsuredPerson(@Valid @ModelAttribute("insuredPerson") InsuredPerson insuredPerson, BindingResult bindingResult) throws EmailAlreadyTakenException {
         if (bindingResult.hasErrors()) {
             return "create_insuredperson";
         }
@@ -86,7 +88,7 @@ public class InsuredPersonsController {
      * @return edit form of Pojistenec
      */
     @GetMapping("/insuredpersons/edit/{id}")
-    public String editInsuredPerson(@PathVariable Long id, Model model) {
+    public String editInsuredPerson(@PathVariable Long id, Model model) throws InsuredPersonNotFoundException {
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(id));
         return "edit_insuredperson";
     }
@@ -100,7 +102,7 @@ public class InsuredPersonsController {
      */
     @PostMapping("/insuredpersons/{id}")
     public String updateInsuredPerson(@PathVariable Long id,
-                                      @ModelAttribute("insuredPerson") InsuredPerson insuredPerson) {
+                                      @ModelAttribute("insuredPerson") InsuredPerson insuredPerson) throws InsuredPersonNotFoundException, EmailAlreadyTakenException {
         //get Insured person from database by id
         insuredPerson.setId(id);
         //save updated Insured person object
@@ -127,7 +129,7 @@ public class InsuredPersonsController {
      * @return page with details of Pojistenec
      */
     @GetMapping("/insuredpersons/detail/{id}")
-    public String detailInsuredPerson(Model model, InsuredPerson insuredPerson) {
+    public String detailInsuredPerson(Model model, InsuredPerson insuredPerson) throws InsuredPersonNotFoundException {
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(insuredPerson.getId()));
         if (insuredPersonsService.getInsuredPersonById(insuredPerson.getId()).getAllInsurance() != null) {
             model.addAttribute("allInsurance", insuredPersonsService.getInsuredPersonById(insuredPerson.getId())
@@ -145,7 +147,7 @@ public class InsuredPersonsController {
      * @return create_pojisteni page
      */
     @GetMapping("/insuredpersons/new/{id}")
-    public String createInsuranceForm(@PathVariable Long id, Model model) {
+    public String createInsuranceForm(@PathVariable Long id, Model model) throws InsuredPersonNotFoundException {
         //creates new object of Insurance to hold data from form
         Insurance insurance = new Insurance();
         model.addAttribute("individualInsurance", insurance);
@@ -164,7 +166,7 @@ public class InsuredPersonsController {
     public String saveInsurance(@PathVariable Long id, Model model,
                                 @ModelAttribute("insuredPerson") InsuredPerson insuredPerson,
                                 @Valid @ModelAttribute("individualInsurance") Insurance insurance,
-                                BindingResult bindingResult) {
+                                BindingResult bindingResult) throws InsuredPersonNotFoundException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(id));
             return "create_insurance";
@@ -184,7 +186,7 @@ public class InsuredPersonsController {
      */
     @GetMapping("/insuredpersons/detail/{idPerson}/insurance/{idInsurance}")
     public String deleteInsurance(@PathVariable Long idPerson,
-                                  @PathVariable Long idInsurance) {
+                                  @PathVariable Long idInsurance) throws InsuredPersonNotFoundException {
         insuredPersonsService.getInsuredPersonById(idPerson);
         insuredPersonsService.deleteInsurance(idInsurance);
         return "redirect:/insuredpersons/detail/{idPerson}";
@@ -199,7 +201,7 @@ public class InsuredPersonsController {
      * @return edit Insurance form template
      */
     @GetMapping("/insuredpersons/detail/{idPerson}/edit/{idInsurance}")
-    public String editInsurance(@PathVariable Long idPerson, @PathVariable Long idInsurance, Model model) {
+    public String editInsurance(@PathVariable Long idPerson, @PathVariable Long idInsurance, Model model) throws InsuredPersonNotFoundException, InsuranceNotFoundException {
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(idPerson));
         model.addAttribute("individualInsurance", insuredPersonsService.getInsuranceById(idInsurance));
         return "edit_insurance";
@@ -215,7 +217,7 @@ public class InsuredPersonsController {
      */
     @PostMapping("/insuredpersons/detail/{idPerson}/insurance/{idInsurance}")
     public String updateInsurance(@PathVariable Long idInsurance, @PathVariable Long idPerson,
-                                  @ModelAttribute("individualInsurance") Insurance insurance) {
+                                  @ModelAttribute("individualInsurance") Insurance insurance) throws InsuredPersonNotFoundException, InsuranceNotFoundException {
         insuredPersonsService.getInsuredPersonById(idPerson);
         //get Insurance from database by id
         insurance.setId(idInsurance);

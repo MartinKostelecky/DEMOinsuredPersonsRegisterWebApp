@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-//TODO test funguje, ale je rozbité ukládání více pojištění, zkusit checkoutnout předchozí verzi a otestovat funkčnost
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class InsuredPersonRepositoryTest {

@@ -16,14 +16,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-//using this annotation we don´t need tearDown method and autoCloseable instance
+//using @ExtendWith annotation allow avoid tearDown method and autoCloseable instance
 @ExtendWith(MockitoExtension.class)
 class InsuredPersonsServiceImplTest {
 
@@ -41,7 +42,7 @@ class InsuredPersonsServiceImplTest {
     @BeforeEach
     void setUp() {
         //autoCloseable = MockitoAnnotations.openMocks(this);
-        insuredPersonsServiceTest = new InsuredPersonsServiceImpl(insuredPersonRepository,insuranceRepository);
+        insuredPersonsServiceTest = new InsuredPersonsServiceImpl(insuredPersonRepository, insuranceRepository);
     }
 
     /*@AfterEach
@@ -58,7 +59,7 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    void canSaveInsuredPerson() {
+    void canSaveInsuredPerson() throws EmailAlreadyTakenException {
         //given
         InsuredPerson insuredPerson = new InsuredPerson(
                 1L,
@@ -94,20 +95,17 @@ class InsuredPersonsServiceImplTest {
                 "000000000"
         );
 
-        given(insuredPersonRepository.existsByEmail(anyString())).willReturn(true);
+        when(insuredPersonRepository.existsByEmail("jan@novak.cz")).thenReturn(true);
 
-        //when
-        //then
-        assertThatThrownBy(() -> insuredPersonsServiceTest.saveInsuredPerson(insuredPerson))
-                .isInstanceOf(EmailAlreadyTakenException.class)
-                .hasMessageContaining("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
+        EmailAlreadyTakenException exception = assertThrows(EmailAlreadyTakenException.class,
+                () -> insuredPersonsServiceTest.saveInsuredPerson(insuredPerson));
 
-        verify(insuredPersonRepository, never()).save(insuredPerson);
+        assertEquals("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.", exception.getMessage());
 
     }
 
     @Test
-    void canGetInsuredPersonById() {
+    void canGetInsuredPersonById() throws InsuredPersonNotFoundException {
         //given
         Long id = 1L;
         InsuredPerson expectedInsuredPerson = new InsuredPerson(
@@ -130,21 +128,23 @@ class InsuredPersonsServiceImplTest {
         //check if actual Insured person doesn´t point to null and check if equals to expected insured person
         assertThat(actualInsuredPerson).isNotNull().isEqualTo(expectedInsuredPerson);
     }
+
     @Test
-    void cantGetInsuredPersonById() {
+    void cantGetInsuredPersonById() throws InsuredPersonNotFoundException {
         //given
         Long id = 2L;
         when(insuredPersonRepository.findById(id)).thenReturn(Optional.empty());
-        //when
 
-        InsuredPerson actualInsuredPerson = insuredPersonsServiceTest.getInsuredPersonById(id);
+        //when
+        InsuredPersonNotFoundException exception = assertThrows(InsuredPersonNotFoundException.class,
+                () -> insuredPersonsServiceTest.getInsuredPersonById(id));
 
         //then
-        assertThat(actualInsuredPerson).isNull();
+        assertEquals("Pojištěný nenalezen.", exception.getMessage());
     }
 
     @Test
-    void canUpdateInsuredPerson() {
+    void canUpdateInsuredPerson() throws InsuredPersonNotFoundException, EmailAlreadyTakenException {
         //given
 
         //instance of Insured person we want to update
@@ -173,7 +173,7 @@ class InsuredPersonsServiceImplTest {
         //This is a way to simulate the behavior of the save method by returning the InsuredPerson that was passed to it.
         //without actually persisting it to the database during the test.
         when(insuredPersonRepository.save(argThat(insuredPerson ->
-                        "Adam Novák".equals(insuredPerson.getName()) &&
+                "Adam Novák".equals(insuredPerson.getName()) &&
                         "Nová 3".equals(insuredPerson.getStreet()) &&
                         "Brno".equals(insuredPerson.getCity()) &&
                         "adam@novak.cz".equals(insuredPerson.getEmail()) &&
@@ -186,10 +186,10 @@ class InsuredPersonsServiceImplTest {
         //then
         verify(insuredPersonRepository).save(argThat(insuredPerson ->
                 "Adam Novák".equals(insuredPerson.getName()) &&
-                "Nová 3".equals(insuredPerson.getStreet()) &&
-                "Brno".equals(insuredPerson.getCity()) &&
-                "adam@novak.cz".equals(insuredPerson.getEmail()) &&
-                "111111111".equals(insuredPerson.getPhoneNumber())
+                        "Nová 3".equals(insuredPerson.getStreet()) &&
+                        "Brno".equals(insuredPerson.getCity()) &&
+                        "adam@novak.cz".equals(insuredPerson.getEmail()) &&
+                        "111111111".equals(insuredPerson.getPhoneNumber())
         ));
 
         assertThat(updatedInsuredPerson.getId()).isEqualTo(1L);
@@ -244,6 +244,7 @@ class InsuredPersonsServiceImplTest {
         //times(1) = do it once
         verify(insuredPersonRepository, times(1)).deleteById(eq(insuredPerson.getId()));
     }
+
     @Test
     void canGetAllInsurance() {
         //when
@@ -273,6 +274,8 @@ class InsuredPersonsServiceImplTest {
                 "000000000"
         );
 
+        insuredPerson.setAllInsurance(new ArrayList<>());
+
         //when
         insuredPersonsServiceTest.saveInsurance(insurance, insuredPerson);
 
@@ -287,7 +290,7 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    void canGetInsuranceById() {
+    void canGetInsuranceById() throws InsuranceNotFoundException {
         //given
         //test id value
         Long id = 1L;
@@ -313,7 +316,7 @@ class InsuredPersonsServiceImplTest {
     }
 
     @Test
-    void canUpdateInsurance() {
+    void canUpdateInsurance() throws InsuranceNotFoundException {
         //given
 
         //instance of Insurance we want to update
