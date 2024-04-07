@@ -6,8 +6,11 @@
     <title>Error Page</title>
 </head>
 <body>
-<h1>Error</h1>
-<p>Status Code: <span th:text="${status}"></span></p>
-<p>Error Message: <span th:text="${error.message}"></span></p>
+<h1>Něco se pokazilo...</h1>
+<p>Kód chyby: <span th:text="${status}"></span></p>
+<p>Chybová zpráva: <span th:text="${message}"></span></p>
+<button>
+    <a th:href="@{/insuredpersons}" class="nav-link">Zpět na hlavní stranu</a>
+</button>
 </body>
 </html>

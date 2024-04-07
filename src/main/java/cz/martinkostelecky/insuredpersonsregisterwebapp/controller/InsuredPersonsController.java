@@ -31,6 +31,7 @@ public class InsuredPersonsController {
 
     /**
      * Constructor
+     *
      * @param insuredPersonsService
      */
     public InsuredPersonsController(InsuredPersonsService insuredPersonsService) {
@@ -236,10 +237,5 @@ public class InsuredPersonsController {
         return "about";
     }
 
-    /*@GetMapping("/error")
-    public String errorPage() {
-        //TODO nezobrazuje error stránku
-        throw new EmailAlreadyTakenException("Tento email už patří někomu jinému.");
-    }*/
 }
 

@@ -107,6 +107,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
 
     /**
      * Delete Insured person by id
+     *
      * @param id id of Insured person
      */
     @Override
@@ -141,6 +142,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
 
     /**
      * Find insurance by id or throws InsuranceNotFoundException
+     *
      * @param id of Insurance
      * @return Insurance by id
      */
@@ -152,6 +154,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
 
     /**
      * Save updated Insurance
+     *
      * @param insurance
      * @return save of Insurance
      */
@@ -177,6 +180,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
 
     /**
      * Delete of Insurance by id
+     *
      * @param id id of Insurance
      */
     @Override

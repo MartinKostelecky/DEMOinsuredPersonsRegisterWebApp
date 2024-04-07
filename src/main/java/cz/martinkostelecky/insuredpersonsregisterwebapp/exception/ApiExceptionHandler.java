@@ -1,59 +1,38 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
 
     @ExceptionHandler(value = EmailAlreadyTakenException.class)
-    public ResponseEntity<Object> handleBadRequestException(EmailAlreadyTakenException e) {
-        //Create payload containing exception details
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-        ApiException apiException = new ApiException(
-                e.getMessage(),
-                //throwable e
-                e,
-                badRequest,
-                ZonedDateTime.now(ZoneId.of("Z"))
-        );
-        //Return response entity
-        return new ResponseEntity<>(apiException, badRequest);
+    public String handleBadRequestException(EmailAlreadyTakenException e, Model model) {
+
+        model.addAttribute("status", HttpStatus.BAD_REQUEST);
+        model.addAttribute("message", e.getMessage());
+
+        return "error";
     }
 
     @ExceptionHandler(value = InsuredPersonNotFoundException.class)
-    public ResponseEntity<Object> handleInsuredPersonNotFoundException(InsuredPersonNotFoundException e) {
-        //Create payload containing exception details
-        HttpStatus notFound = HttpStatus.NOT_FOUND;
-        ApiException apiException = new ApiException(
-                e.getMessage(),
-                //throwable e
-                e,
-                notFound,
-                ZonedDateTime.now(ZoneId.of("Z"))
-        );
-        //Return response entity
-        return new ResponseEntity<>(apiException, notFound);
+    public String handleInsuredPersonNotFoundException(InsuredPersonNotFoundException e, Model model) {
+
+        model.addAttribute("status", HttpStatus.NOT_FOUND);
+        model.addAttribute("message", e.getMessage());
+
+        return "error";
     }
 
     @ExceptionHandler(value = InsuranceNotFoundException.class)
-    public ResponseEntity<Object> handleInsuranceNotFoundException(InsuranceNotFoundException e) {
-        //Create payload containing exception details
-        HttpStatus notFound = HttpStatus.NOT_FOUND;
-        ApiException apiException = new ApiException(
-                e.getMessage(),
-                //throwable e
-                e,
-                notFound,
-                ZonedDateTime.now(ZoneId.of("Z"))
-        );
-        //Return response entity
-        return new ResponseEntity<>(apiException, notFound);
+    public String handleInsuranceNotFoundException(InsuranceNotFoundException e, Model model) {
+
+        model.addAttribute("status", HttpStatus.NOT_FOUND);
+        model.addAttribute("message", e.getMessage());
+
+        return "error";
     }
 
 }
