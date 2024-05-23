@@ -10,7 +10,8 @@
                 <h1>Úprava dat pojištěnce</h1>
             </div>
             <div class="card-body">
-                <form th:action="@{/insuredpersons/{id} (id=${insuredPerson.id})}" th:object = ${insuredPerson} method="POST">
+                <form method="POST" th:action="@{/insuredpersons/{id} (id=${insuredPerson.id})}"
+                      th:object="${insuredPerson}">
                     <div class="form-group">
                         <label>Jméno pojištěnce</label>
                         <input

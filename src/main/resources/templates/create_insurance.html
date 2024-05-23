@@ -7,10 +7,11 @@
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
             <div class="text-center">
-                <h1>Přidat pojištění k <span th:text = "${insuredPerson.name}"></span></h1>
+                <h1>Přidat pojištění k <span th:text="${insuredPerson.name}"></span></h1>
             </div>
             <div class="card-body">
-                <form th:action="@{/insuredpersons/detail/{id} (id=${insuredPerson.id})}" th:object = ${individualInsurance} method="POST">
+                <form method="POST"
+                      th:action="@{/insuredpersons/detail/{id} (id=${insuredPerson.id})}" th:object="${individualInsurance}">
                     <div class="form-group">
                         <label for="type_of_insurance">Druh pojištění</label>
                         <select th:field="*{type}" class="form-control" id="type_of_insurance">
@@ -40,7 +41,8 @@
                                 class="form-control"
                                 th:errorClass="is-invalid"
                         />
-                        <div th:if="${#fields.hasErrors('subjectOfInsurance')}" th:errors="*{subjectOfInsurance}" class="text-danger"></div>
+                        <div class="text-danger" th:errors="*{subjectOfInsurance}"
+                             th:if="${#fields.hasErrors('subjectOfInsurance')}"></div>
                     </div>
                     <div class="form-group">
                         <label>Platnost od</label>
@@ -51,7 +53,8 @@
                                 class="form-control"
                                 th:errorClass="is-invalid"
                         />
-                        <div th:if="${#fields.hasErrors('validFrom')}" th:errors="*{validFrom}" class="text-danger"></div>
+                        <div class="text-danger" th:errors="*{validFrom}"
+                             th:if="${#fields.hasErrors('validFrom')}"></div>
                     </div>
                     <div class="form-group">
                         <label>Platnost do</label>

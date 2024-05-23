@@ -8,6 +8,7 @@ import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonN
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuranceRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.InsuredPersonRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.InsuredPersonsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,23 +19,24 @@ import java.util.Optional;
  * Implementation class of Insured person methods
  */
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class InsuredPersonsServiceImpl implements InsuredPersonsService {
     /**
      * Class attributes
      */
-    private InsuredPersonRepository insuredPersonRepository;
-    private InsuranceRepository insuranceRepository;
+    private final InsuredPersonRepository insuredPersonRepository;
+    private final InsuranceRepository insuranceRepository;
 
     /**
      * Constructor
      *
      * @param insuredPersonRepository
      */
-    public InsuredPersonsServiceImpl(InsuredPersonRepository insuredPersonRepository, InsuranceRepository insuranceRepository) {
+    /*public InsuredPersonsServiceImpl(InsuredPersonRepository insuredPersonRepository, InsuranceRepository insuranceRepository) {
         this.insuredPersonRepository = insuredPersonRepository;
         this.insuranceRepository = insuranceRepository;
-    }
+    }*/
 
     /**
      * Finds all Insured persons in database

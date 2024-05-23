@@ -4,85 +4,86 @@
 <body>
 <nav th:replace="~{fragments/layout.html :: nav}"></nav>
 <div class="container-fluid" style="margin-top:80px">
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
-                <div class="text-center">
-                    <h1>Vytvoření nového pojištěnce</h1>
-                </div>
-                <div class="card-body">
-                    <form th:action="@{/insuredpersons}" th:object = ${insuredPerson} method="POST">
-                        <div class="form-group">
-                            <label>Jméno pojištěnce</label>
-                            <input
-                            type="text"
-                            name="name"
-                            th:field="*{name}"
-                            placeholder="Zadejte jméno a příjmení pojištěnce"
-                            class="form-control"
-                            th:errorClass="is-invalid"
-                            />
-                            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Ulice a číslo popisné</label>
-                            <input
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <div class="text-center">
+                <h1>Vytvoření nového pojištěnce</h1>
+            </div>
+            <div class="card-body">
+                <form method="POST" th:action="@{/insuredpersons}" th:object="${insuredPerson}">
+                    <div class="form-group">
+                        <label>Jméno pojištěnce</label>
+                        <input
+                                class="form-control"
+                                name="name"
+                                placeholder="Zadejte jméno a příjmení pojištěnce"
+                                th:errorClass="is-invalid"
+                                th:field="*{name}"
+                                type="text"
+                        />
+                        <div class="text-danger" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ulice a číslo popisné</label>
+                        <input
                                 type="text"
                                 name="street"
                                 th:field="*{street}"
                                 placeholder="Zadejte ulici a číslo popisné"
                                 class="form-control"
                                 th:errorClass="is-invalid"
-                            />
-                            <div th:if="${#fields.hasErrors('street')}" th:errors="*{street}" class="text-danger"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Město</label>
-                            <input
+                        />
+                        <div class="text-danger" th:errors="*{street}" th:if="${#fields.hasErrors('street')}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Město</label>
+                        <input
                                 type="text"
                                 name="city"
                                 th:field="*{city}"
                                 placeholder="Zadejte město"
                                 class="form-control"
                                 th:errorClass="is-invalid"
-                            />
-                            <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="text-danger"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>E-mail</label>
-                            <input
+                        />
+                        <div class="text-danger" th:errors="*{city}" th:if="${#fields.hasErrors('city')}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input
                                 type="text"
                                 name="email"
                                 th:field="*{email}"
                                 placeholder="Zadejte e-mail pojištěnce"
                                 class="form-control"
                                 th:errorClass="is-invalid"
-                            />
-                            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Telefonní číslo</label>
-                            <input
+                        />
+                        <div class="text-danger" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefonní číslo</label>
+                        <input
                                 type="text"
                                 name="phoneNumber"
                                 th:field="*{phoneNumber}"
                                 placeholder="Zadejte telefonní číslo pojištěnce"
                                 class="form-control"
                                 th:errorClass="is-invalid"
-                            />
-                            <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></div>
-                        </div>
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">
-                                Uložit
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                        />
+                        <div class="text-danger" th:errors="*{phoneNumber}"
+                             th:if="${#fields.hasErrors('phoneNumber')}"></div>
+                    </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" type="submit">
+                            Uložit
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <div class="text-center">
-        <footer th:replace="~{fragments/layout.html :: footer}"></footer>
-    </div>
+</div>
+<div class="text-center">
+    <footer th:replace="~{fragments/layout.html :: footer}"></footer>
+</div>
 </body>
 </html>

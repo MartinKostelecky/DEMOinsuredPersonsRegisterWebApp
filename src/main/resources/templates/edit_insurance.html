@@ -10,8 +10,8 @@
                 <h1>Úprava dat pojištění</h1>
             </div>
             <div class="card-body">
-                <form th:action="@{/insuredpersons/detail/{idPerson}/insurance/{idInsurance} (idPerson=${insuredPerson.id},
-                idInsurance=${individualInsurance.id})}" th:object = ${individualInsurance} method="POST">
+                <form method="POST" th:action="@{/insuredpersons/detail/{idPerson}/insurance/{idInsurance} (idPerson=${insuredPerson.id},
+                idInsurance=${individualInsurance.id})}" th:object="${individualInsurance}">
                     <div class="form-group">
                         <label for="type_of_insurance">Druh pojištění</label>
                         <select th:field="*{type}" class="form-control" id="type_of_insurance">
