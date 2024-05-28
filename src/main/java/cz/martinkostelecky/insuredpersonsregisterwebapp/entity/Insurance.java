@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name="allInsurance")
+@Table(name = "all_insurance")
 public class Insurance {
     /**
      * Class attributes

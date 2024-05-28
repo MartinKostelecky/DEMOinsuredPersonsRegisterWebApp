@@ -7,45 +7,38 @@ import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuranceNotFo
 import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.InsuredPersonNotFoundException;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.InsuredPersonsService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * Insured person controller class
  */
 @Controller
+@RequiredArgsConstructor
 @Slf4j
 public class InsuredPersonsController {
+
     /**
      * Class attributes
      */
-    @Autowired
-    private InsuredPersonsService insuredPersonsService;
-
-    /**
-     * Constructor
-     *
-     * @param insuredPersonsService
-     */
-    public InsuredPersonsController(InsuredPersonsService insuredPersonsService) {
-        super();
-        this.insuredPersonsService = insuredPersonsService;
-    }
+    private final InsuredPersonsService insuredPersonsService;
 
     /**
      * handler method to handle list of pojistenci and return model and view
      *
-     * @param model
+     * @param model list of insured persons
      * @return insuredpersons page
      */
-    @GetMapping("/insuredpersons")
+    @RequestMapping(value = "/insuredpersons", method = GET)
     public String listInsuredPerson(Model model) {
         model.addAttribute("insuredPersons", insuredPersonsService.getAllInsuredPerson());
         return "insuredpersons";
@@ -54,10 +47,10 @@ public class InsuredPersonsController {
     /**
      * handler method to create new Insured person in database
      *
-     * @param model
+     * @param model insured person entity
      * @return create_insuredperson page
      */
-    @GetMapping("/insuredpersons/new")
+    @RequestMapping(value = "/insuredpersons/new", method = GET)
     public String createInsuredPersonForm(Model model) {
         //creates new object of Insured person to hold data from form
         InsuredPerson insuredPerson = new InsuredPerson();
@@ -71,7 +64,7 @@ public class InsuredPersonsController {
      * @param insuredPerson
      * @return redirects to insuredpersons page
      */
-    @PostMapping("/insuredpersons")
+    @RequestMapping(value = "/insuredpersons", method = POST)
     public String saveInsuredPerson(@Valid @ModelAttribute("insuredPerson") InsuredPerson insuredPerson, BindingResult bindingResult) throws EmailAlreadyTakenException {
         if (bindingResult.hasErrors()) {
             return "create_insuredperson";
@@ -88,7 +81,7 @@ public class InsuredPersonsController {
      * @param model displays data of Insured person in view
      * @return edit form of Pojistenec
      */
-    @GetMapping("/insuredpersons/edit/{id}")
+    @RequestMapping(value = "/insuredpersons/edit/{id}", method = GET)
     public String editInsuredPerson(@PathVariable Long id, Model model) throws InsuredPersonNotFoundException {
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(id));
         return "edit_insuredperson";
@@ -101,7 +94,7 @@ public class InsuredPersonsController {
      * @param insuredPerson object Insured person of model
      * @return redirects to the list of Insured persons
      */
-    @PostMapping("/insuredpersons/{id}")
+    @RequestMapping(value = "/insuredpersons/{id}", method = POST)
     public String updateInsuredPerson(@PathVariable Long id,
                                       @ModelAttribute("insuredPerson") InsuredPerson insuredPerson) throws InsuredPersonNotFoundException, EmailAlreadyTakenException {
         //get Insured person from database by id
@@ -117,7 +110,7 @@ public class InsuredPersonsController {
      * @param id id of Insured person
      * @return redirects to the list of Insured persons
      */
-    @GetMapping("/insuredpersons/{id}")
+    @RequestMapping(value = "/insuredpersons/{id}", method = GET)
     public String deleteInsuredPerson(@PathVariable Long id) {
         insuredPersonsService.deleteInsuredPerson(id);
         return "redirect:/insuredpersons";
@@ -129,7 +122,7 @@ public class InsuredPersonsController {
      * @param model displays data of Pojistenec in view
      * @return page with details of Pojistenec
      */
-    @GetMapping("/insuredpersons/detail/{id}")
+    @RequestMapping(value = "/insuredpersons/detail/{id}", method = GET)
     public String detailInsuredPerson(Model model, InsuredPerson insuredPerson) throws InsuredPersonNotFoundException {
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(insuredPerson.getId()));
         if (insuredPersonsService.getInsuredPersonById(insuredPerson.getId()).getAllInsurance() != null) {
@@ -147,7 +140,7 @@ public class InsuredPersonsController {
      * @param model
      * @return create_pojisteni page
      */
-    @GetMapping("/insuredpersons/new/{id}")
+    @RequestMapping(value = "/insuredpersons/new/{id}", method = GET)
     public String createInsuranceForm(@PathVariable Long id, Model model) throws InsuredPersonNotFoundException {
         //creates new object of Insurance to hold data from form
         Insurance insurance = new Insurance();
@@ -163,7 +156,7 @@ public class InsuredPersonsController {
      * @param insurance
      * @return detail of Insured person with saved Insurances
      */
-    @PostMapping("/insuredpersons/detail/{id}")
+    @RequestMapping(value = "/insuredpersons/detail/{id}", method = POST)
     public String saveInsurance(@PathVariable Long id, Model model,
                                 @ModelAttribute("insuredPerson") InsuredPerson insuredPerson,
                                 @Valid @ModelAttribute("individualInsurance") Insurance insurance,
@@ -185,7 +178,7 @@ public class InsuredPersonsController {
      * @param idInsurance
      * @return detail of Insured person
      */
-    @GetMapping("/insuredpersons/detail/{idPerson}/insurance/{idInsurance}")
+    @RequestMapping(value = "/insuredpersons/detail/{idPerson}/insurance/{idInsurance}", method = GET)
     public String deleteInsurance(@PathVariable Long idPerson,
                                   @PathVariable Long idInsurance) throws InsuredPersonNotFoundException {
         insuredPersonsService.getInsuredPersonById(idPerson);
@@ -201,7 +194,7 @@ public class InsuredPersonsController {
      * @param model
      * @return edit Insurance form template
      */
-    @GetMapping("/insuredpersons/detail/{idPerson}/edit/{idInsurance}")
+    @RequestMapping(value = "/insuredpersons/detail/{idPerson}/edit/{idInsurance}", method = GET)
     public String editInsurance(@PathVariable Long idPerson, @PathVariable Long idInsurance, Model model) throws InsuredPersonNotFoundException, InsuranceNotFoundException {
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(idPerson));
         model.addAttribute("individualInsurance", insuredPersonsService.getInsuranceById(idInsurance));
@@ -216,7 +209,7 @@ public class InsuredPersonsController {
      * @param insurance
      * @return detail of Insured person with insurances
      */
-    @PostMapping("/insuredpersons/detail/{idPerson}/insurance/{idInsurance}")
+    @RequestMapping(value = "/insuredpersons/detail/{idPerson}/insurance/{idInsurance}", method = POST)
     public String updateInsurance(@PathVariable Long idInsurance, @PathVariable Long idPerson,
                                   @ModelAttribute("individualInsurance") Insurance insurance) throws InsuredPersonNotFoundException, InsuranceNotFoundException {
         insuredPersonsService.getInsuredPersonById(idPerson);
@@ -232,7 +225,7 @@ public class InsuredPersonsController {
      *
      * @return about page template
      */
-    @GetMapping("/about")
+    @RequestMapping(value = "/about", method = GET)
     public String showAboutPage() {
         return "about";
     }

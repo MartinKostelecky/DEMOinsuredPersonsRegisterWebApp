@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name="insuredPersons")
+@Table(name = "insured_persons")
 public class InsuredPerson {
     /**
      * Class attributes
