@@ -1,32 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="cs-cz" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Login page</title>
+    <meta charset="UTF-8">
+    <title>Evidence pojištěných - přihlášení</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
-<h1>Login page</h1>
-<form th:action="@{/authenticate}" method="post">
-    <div>
-        <div>
-            <div>
-                <!--TODO move to insuredpersons-->
-                <div th:if="${param.succes != null}">
-                    You have been logged in successfully.
-                </div>
-                <div th:if="${param.error != null}">
-                    Invalid username and password.
-                </div>
-                <div th:if="${param.logout != null}">
-                    You have been logged out.
-                </div>
-            </div>
+<!--TODO responsive-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top align-items-center" role="navigation">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="exCollapsingNavbar">
+            <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
+                <li class="p-3">
+                    <form class="form-inline" th:action="@{/authenticate}" method="post">
+                        <div class="form-group mb-2">
+                            <label for="email" class="text-white">Uživatelké jméno</label>:
+                            <input type="text" id="email" name="email" placeholder="Zadejte e-mail"/>
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="password" class="text-white">Heslo</label>
+                            <input type="password" id="password" name="password" placeholder="Zadejte heslo"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Přihlásit</button>
+                        <a th:href="@{/register}" class="nav-link text-white">Registrovat</a>
+                    </form>
+                </li>
+            </ul>
         </div>
     </div>
-    <label for="username">Username</label>:
-    <input type="text" id="username" name="username"/> <br/>
-    <label for="password">Password</label>:
-    <input type="password" id="password" name="password"/> <br/>
-    <button type="submit" class="button-success pure-button">Login</button>
-</form>
+</nav>
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="text-center">
+        <div th:if="${param.error != null}" class="alert alert-danger" role="alert">
+            Chybný e-mail nebo heslo.
+        </div>
+        <div th:if="${param.logout != null}" class="alert alert-success" role="alert">
+            Byli jste úspěšně odhlášeni.
+        </div>
+        <h1>Vítejte v aplikaci databáze pojištěných a jejich pojištění. Přihlaste se v právém horním rohu.</h1>
+    </div>
+</div>
+
+<footer th:fragment="footer">
+    Autor aplikace &copy;Martin Kostelecký 2024
+</footer>
 </body>
 </html>

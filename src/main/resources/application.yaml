@@ -14,10 +14,6 @@ spring:
           dialect: org.hibernate.dialect.PostgreSQLDialect
           format_sql: true
 
-security:
-  jwt:
-    secret-key: awdrgzjilp
-
 server:
   error:
     include-message: always

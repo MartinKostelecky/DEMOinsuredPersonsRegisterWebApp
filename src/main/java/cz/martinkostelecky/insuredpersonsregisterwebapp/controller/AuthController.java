@@ -1,9 +1,16 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.controller;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.User;
-import cz.martinkostelecky.insuredpersonsregisterwebapp.service.AuthService;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl.UserServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,11 +25,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final DaoAuthenticationProvider daoAuthenticationProvider;
     private final UserServiceImpl userServiceImpl;
 
-    //TODO javadoc
-    //login form
+    /**
+     * render login page
+     * @return login template
+     */
     @RequestMapping(value = "/login", method = GET)
     public String loginPage() {
         return "login";
@@ -30,26 +39,36 @@ public class AuthController {
 
     /**
      * Handle authentication of User
-     * @param username
+     *
+     * @param email
      * @param password
      * @param redirectAttributes
      * @return
      */
     @RequestMapping(value = "/authenticate", method = POST)
-    public String authenticate(@RequestParam("username") String username,
+    public String authenticate(@RequestParam("email") String email,
                                @RequestParam("password") String password,
+                               HttpServletRequest httpServletRequest,
+                               HttpServletResponse httpServletResponse,
                                RedirectAttributes redirectAttributes) {
 
-        Optional<User> userOptional = userServiceImpl.findByEmail(username);
+        Optional<User> userOptional = userServiceImpl.findByEmail(email);
 
         if (userOptional.isEmpty()) {
-            redirectAttributes.addAttribute("error", "Invalid username and password");
+            redirectAttributes.addAttribute("error");
             return "redirect:/login";
         }
 
-        authService.attemptLogin(username, password);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                UsernamePasswordAuthenticationToken.unauthenticated(email, password);
 
-        redirectAttributes.addAttribute("success", "You have been logged in successfully");
+        Authentication authentication = daoAuthenticationProvider.authenticate(authenticationToken);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+
+        context.setAuthentication(authentication);
+        new HttpSessionSecurityContextRepository().saveContext(context, httpServletRequest, httpServletResponse);
+
+        redirectAttributes.addAttribute("success");
         return "redirect:/insuredpersons";
     }
 }
