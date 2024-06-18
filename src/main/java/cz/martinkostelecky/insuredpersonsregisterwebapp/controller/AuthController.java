@@ -71,5 +71,10 @@ public class AuthController {
         redirectAttributes.addAttribute("success");
         return "redirect:/insuredpersons";
     }
+
+    @RequestMapping(value = "/register", method = GET)
+    public String register() {
+        return "register";
+    }
 }
 

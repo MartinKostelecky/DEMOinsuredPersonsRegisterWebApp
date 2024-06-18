@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs-cz" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="cs-cz" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Evidence pojištěných - přihlášení</title>
@@ -23,8 +23,8 @@
                             <input type="password" id="password" name="password" placeholder="Zadejte heslo"/>
                         </div>
                         <button type="submit" class="btn btn-primary mb-2">Přihlásit</button>
-                        <a th:href="@{/register}" class="nav-link text-white">Registrovat</a>
                     </form>
+                    <a th:href="@{/register}" class="nav-link text-white">Registrovat</a>
                 </li>
             </ul>
         </div>
