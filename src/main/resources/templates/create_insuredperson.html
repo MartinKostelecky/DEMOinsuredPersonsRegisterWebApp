@@ -52,9 +52,9 @@
                         <input
                                 type="text"
                                 name="email"
-                                th:field="*{email}"
                                 placeholder="Zadejte e-mail pojištěnce"
                                 class="form-control"
+                                th:field="*{email}"
                                 th:errorClass="is-invalid"
                         />
                         <div class="text-danger" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>

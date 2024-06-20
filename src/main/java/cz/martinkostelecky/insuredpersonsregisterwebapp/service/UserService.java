@@ -1,10 +1,9 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.service;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.User;
-
-import java.util.Optional;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.EmailAlreadyTakenException;
 
 public interface UserService {
 
-    Optional<User> findByEmail(String email);
+    void saveUser(User user) throws EmailAlreadyTakenException;
 }

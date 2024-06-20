@@ -29,16 +29,6 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
     private final InsuranceRepository insuranceRepository;
 
     /**
-     * Constructor
-     *
-     * @param insuredPersonRepository
-     */
-    /*public InsuredPersonsServiceImpl(InsuredPersonRepository insuredPersonRepository, InsuranceRepository insuranceRepository) {
-        this.insuredPersonRepository = insuredPersonRepository;
-        this.insuranceRepository = insuranceRepository;
-    }*/
-
-    /**
      * Finds all Insured persons in database
      *
      * @return List of Insured persons in database

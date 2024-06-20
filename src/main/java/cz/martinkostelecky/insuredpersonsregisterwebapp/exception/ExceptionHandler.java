@@ -34,13 +34,4 @@ public class ExceptionHandler {
         return "error";
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = WrongUsernameOrPasswordException.class)
-    public String handleWrongUsernameOrPasswordException(WrongUsernameOrPasswordException e, Model model) {
-
-        model.addAttribute("status", HttpStatus.INTERNAL_SERVER_ERROR);
-        model.addAttribute("message", e.getMessage());
-
-        return "error";
-    }
-
 }

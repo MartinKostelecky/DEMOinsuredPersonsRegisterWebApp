@@ -1,32 +1,38 @@
 package cz.martinkostelecky.insuredpersonsregisterwebapp.service.impl;
 
+import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Role;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.User;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.exception.EmailAlreadyTakenException;
+import cz.martinkostelecky.insuredpersonsregisterwebapp.repository.UserRepository;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
-    private static final String EXISTING_EMAIL = "admin@admin.cz";
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public Optional<User> findByEmail(String email) {
-        //TODO find in database
+    @Override
+    public void saveUser(User user) throws EmailAlreadyTakenException {
 
-        if (EXISTING_EMAIL.equalsIgnoreCase(email)) {
-
-            //var can be used as local variable with explicit initialization, cannot be used as a global or instance variable
-            //as well as with generics and in lambda expressions
-            var user = new User();
-            user.setId(1L);
-            user.setEmail(email);
-            user.setPassword("$2a$12$Le20BfbwVnLF1hDQgqRIV.Py1PWpBZjH04Kyye8t8UR2XuwYoBapC");
-            user.setRole("ADMIN");
-
-            return Optional.of(user);
-        } else {
-            return Optional.empty();
+        Boolean existsEmail = userRepository.existsByEmail(user.getEmail());
+        if (existsEmail) {
+            throw new EmailAlreadyTakenException("E-mail " + user.getEmail() + " již patří jinému uživateli.");
         }
+        var newUser = User.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .role(Role.USER)
+                .build();
+        userRepository.save(newUser);
+        log.info("User id: " + newUser.getId() + " created.");
     }
 }
+
