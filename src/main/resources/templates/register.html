@@ -18,10 +18,10 @@
                                 name="name"
                                 placeholder="Zadejte jméno a příjmení uživatele"
                                 type="text"
-
-
+                                th:errorClass="is-invalid"
+                                th:field="*{name}"
                         />
-
+                        <div class="text-danger" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
                     </div>
                     <div class="form-group">
                         <label>Uživatelské jméno (E-mail)</label>
@@ -30,19 +30,35 @@
                                 name="email"
                                 placeholder="Zadejte e-mail uživatele"
                                 class="form-control"
-
+                                th:field="*{email}"
+                                th:errorClass="is-invalid"
                         />
-
-
+                        <div class="text-danger" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
                     </div>
                     <div class="form-group">
                         <label>Heslo</label>
                         <input
-                                type="text"
+                                type="password"
                                 name="password"
                                 placeholder="Zadejte heslo"
                                 class="form-control"
+                                th:field="*{password}"
+                                th:errorClass="is-invalid"
                         />
+                        <div class="text-danger" th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Heslo pro ověření</label>
+                        <input
+                                type="password"
+                                name="confirmPassword"
+                                placeholder="Zadejte heslo znovu"
+                                class="form-control"
+                                th:field="*{confirmPassword}"
+                                th:errorClass="is-invalid"
+                        />
+                        <div class="text-danger" th:errors="*{confirmPassword}" th:if="${#fields.hasErrors('confirmPassword')}"
+                             >Hesla se musí shodovat</div>
                     </div>
                     <div class="box-footer">
                         <button class="btn btn-primary" type="submit">

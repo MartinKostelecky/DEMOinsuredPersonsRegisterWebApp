@@ -40,7 +40,15 @@ public class User implements UserDetails {
     private String email;
 
     @JsonIgnore
+    @NotNull(message="Heslo musí být vyplněno.")
+    @NotBlank(message = "Heslo musí být vyplněno.")
     private String password;
+
+    @JsonIgnore
+    @NotNull(message="Heslo pro ověření musí být vyplněno.")
+    @NotBlank(message = "Heslo pro ověření musí být vyplněno.")
+    @Transient
+    private String confirmPassword;
 
     @Enumerated(EnumType.STRING)
     private Role role;

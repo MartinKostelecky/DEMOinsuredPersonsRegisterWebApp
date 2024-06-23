@@ -63,7 +63,7 @@ public class AuthController {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
 
-        if (userOptional.isEmpty()) {
+        if (userOptional.isEmpty() || !userOptional.get().getPassword().equals(password)) {
             redirectAttributes.addAttribute("error", "Chybný e-mail nebo heslo.");
             return "redirect:/login";
         }
@@ -81,6 +81,11 @@ public class AuthController {
         return "redirect:/insuredpersons";
     }
 
+    /**
+     * render registration page
+     * @param model of User
+     * @return registration template
+     */
     @RequestMapping(value = "/register", method = GET)
     public String showRegisterForm(Model model) {
         User user = new User();
@@ -88,9 +93,18 @@ public class AuthController {
         return "register";
     }
 
+    /**
+     * handle user registration
+     * @param user data from form
+     * @param bindingResult
+     * @return redirect back to login page after successful registration
+     * @throws EmailAlreadyTakenException
+     */
     @RequestMapping(value = "/register", method = POST)
-    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) throws EmailAlreadyTakenException {
-        if (bindingResult.hasErrors()) {
+    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult)
+            throws EmailAlreadyTakenException {
+        if (bindingResult.hasErrors() || !user.getPassword().equals(user.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "error.user", "Hesla se musí shodovat");
             return "register";
         }
         userService.saveUser(user);
