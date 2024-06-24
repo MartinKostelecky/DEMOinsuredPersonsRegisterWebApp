@@ -14,6 +14,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +38,7 @@ public class AuthController {
     private final DaoAuthenticationProvider daoAuthenticationProvider;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     /**
      * render login page
@@ -63,7 +66,7 @@ public class AuthController {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
 
-        if (userOptional.isEmpty() || !userOptional.get().getPassword().equals(password)) {
+        if (userOptional.isEmpty() || !passwordEncoder.matches(password, userOptional.get().getPassword())) {
             redirectAttributes.addAttribute("error", "Chybný e-mail nebo heslo.");
             return "redirect:/login";
         }
