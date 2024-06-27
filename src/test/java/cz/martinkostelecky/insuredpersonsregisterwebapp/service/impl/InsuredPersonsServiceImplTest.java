@@ -34,8 +34,7 @@ class InsuredPersonsServiceImplTest {
     //private AutoCloseable autoCloseable;
     @Mock
     private InsuranceRepository insuranceRepository;
-    //used to inject the mock into the instance of service class
-    @InjectMocks
+
     private InsuredPersonsServiceImpl insuredPersonsServiceTest;
 
     //before each test we get new insuredPersonsService

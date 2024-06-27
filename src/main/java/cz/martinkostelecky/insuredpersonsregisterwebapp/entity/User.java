@@ -45,8 +45,6 @@ public class User implements UserDetails {
     private String password;
 
     @JsonIgnore
-    @NotNull(message="Heslo pro ověření musí být vyplněno.")
-    @NotBlank(message = "Heslo pro ověření musí být vyplněno.")
     @Transient
     private String confirmPassword;
 
