@@ -9,9 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,7 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Slf4j
 public class AuthController {
 
-    private final DaoAuthenticationProvider daoAuthenticationProvider;
+    private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -70,13 +69,12 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                UsernamePasswordAuthenticationToken.unauthenticated(email, password);
+        var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
-        Authentication authentication = daoAuthenticationProvider.authenticate(authenticationToken);
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        SecurityContext context = SecurityContextHolder.getContext();
 
         context.setAuthentication(authentication);
+
         new HttpSessionSecurityContextRepository().saveContext(context, httpServletRequest, httpServletResponse);
 
         redirectAttributes.addAttribute("success");
