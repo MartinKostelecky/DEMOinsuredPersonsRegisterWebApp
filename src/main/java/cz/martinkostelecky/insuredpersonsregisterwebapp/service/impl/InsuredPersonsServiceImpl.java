@@ -123,13 +123,17 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      */
     @Override
     public void saveInsurance(Insurance insurance, InsuredPerson insuredPerson) {
-        List<Insurance> allInsurance = insuredPerson.getAllInsurance();
+        Insurance insuranceToSave = new Insurance();
 
-        insurance.setInsuredPerson(insuredPerson);
-        allInsurance.add(insurance);
-        insuredPerson.setAllInsurance(allInsurance);
+        insuranceToSave.setType(insurance.getType());
+        insuranceToSave.setAmount(insurance.getAmount());
+        insuranceToSave.setSubjectOfInsurance(insurance.getSubjectOfInsurance());
+        insuranceToSave.setValidFrom(insurance.getValidFrom());
+        insuranceToSave.setValidTo(insurance.getValidTo());
+        insuranceToSave.setInsuredPerson(insuredPerson);
+        insuredPerson.getAllInsurance().add(insuranceToSave);
 
-        insuranceRepository.save(insurance);
+        insuranceRepository.save(insuranceToSave);
     }
 
     /**

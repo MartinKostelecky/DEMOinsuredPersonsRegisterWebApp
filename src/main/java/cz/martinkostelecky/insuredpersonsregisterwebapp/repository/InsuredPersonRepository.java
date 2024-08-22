@@ -8,10 +8,9 @@ import org.springframework.stereotype.Repository;
 public interface InsuredPersonRepository extends JpaRepository<InsuredPerson, Long> {
 
     //method annotation containing sql query for execution
-    @Query("" + "SELECT CASE WHEN COUNT(p) > 0 THEN " +
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN " +
             "TRUE ELSE FALSE END " +
             "FROM InsuredPerson p " +
             "WHERE p.email = ?1")
-
     Boolean existsByEmail(String email);
 }

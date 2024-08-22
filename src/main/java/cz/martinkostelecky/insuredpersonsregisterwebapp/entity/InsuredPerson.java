@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "insured_persons")
+@NoArgsConstructor
 public class InsuredPerson {
     /**
      * Class attributes
@@ -53,14 +55,14 @@ public class InsuredPerson {
     private String phoneNumber;
 
     @OneToMany(mappedBy = "insuredPerson", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Insurance> allInsurance;
+    private List<Insurance> allInsurance = new ArrayList<>();
 
     /**
      * Constructor creating Insured person and initializing list of insurances
      */
-    public InsuredPerson() {
+    /*public InsuredPerson() {
         this.allInsurance = new ArrayList<>();
-    }
+    }*/
 
     /**
      * Parametric constructor

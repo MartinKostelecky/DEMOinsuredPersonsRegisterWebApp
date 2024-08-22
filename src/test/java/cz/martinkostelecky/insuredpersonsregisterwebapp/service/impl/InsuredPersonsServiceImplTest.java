@@ -183,13 +183,7 @@ class InsuredPersonsServiceImplTest {
         InsuredPerson updatedInsuredPerson = insuredPersonsServiceTest.updateInsuredPerson(toUpdateInsuredPerson);
 
         //then
-        verify(insuredPersonRepository).save(argThat(insuredPerson ->
-                "Adam Novák".equals(insuredPerson.getName()) &&
-                        "Nová 3".equals(insuredPerson.getStreet()) &&
-                        "Brno".equals(insuredPerson.getCity()) &&
-                        "adam@novak.cz".equals(insuredPerson.getEmail()) &&
-                        "111111111".equals(insuredPerson.getPhoneNumber())
-        ));
+        verify(insuredPersonRepository).save(eq(updatedInsuredPerson));
 
         assertThat(updatedInsuredPerson.getId()).isEqualTo(1L);
         assertThat(updatedInsuredPerson.getName()).isEqualTo("Adam Novák");

@@ -40,7 +40,9 @@ public class InsuredPersonsController {
      */
     @RequestMapping(value = "/insuredpersons", method = GET)
     public String listInsuredPerson(Model model) {
+
         model.addAttribute("insuredPersons", insuredPersonsService.getAllInsuredPerson());
+
         return "insuredpersons";
     }
 
@@ -55,6 +57,7 @@ public class InsuredPersonsController {
         //creates new object of Insured person to hold data from form
         InsuredPerson insuredPerson = new InsuredPerson();
         model.addAttribute("insuredPerson", insuredPerson);
+
         return "create_insuredperson";
     }
 
@@ -66,11 +69,12 @@ public class InsuredPersonsController {
      */
     @RequestMapping(value = "/insuredpersons", method = POST)
     public String saveInsuredPerson(@Valid @ModelAttribute("insuredPerson") InsuredPerson insuredPerson, BindingResult bindingResult) throws EmailAlreadyTakenException {
+
         if (bindingResult.hasErrors()) {
             return "create_insuredperson";
         }
         insuredPersonsService.saveInsuredPerson(insuredPerson);
-        log.info("Insurance list of insured person id: " + insuredPerson.getId() + " created.");
+
         return "redirect:/insuredpersons";
     }
 
@@ -112,6 +116,7 @@ public class InsuredPersonsController {
      */
     @RequestMapping(value = "/insuredpersons/{id}", method = GET)
     public String deleteInsuredPerson(@PathVariable Long id) {
+
         insuredPersonsService.deleteInsuredPerson(id);
         return "redirect:/insuredpersons";
     }
@@ -124,12 +129,14 @@ public class InsuredPersonsController {
      */
     @RequestMapping(value = "/insuredpersons/detail/{id}", method = GET)
     public String detailInsuredPerson(Model model, InsuredPerson insuredPerson) throws InsuredPersonNotFoundException {
+
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(insuredPerson.getId()));
         if (insuredPersonsService.getInsuredPersonById(insuredPerson.getId()).getAllInsurance() != null) {
             model.addAttribute("allInsurance", insuredPersonsService.getInsuredPersonById(insuredPerson.getId())
                     .getAllInsurance());
             return "detail_insuredperson";
         }
+
         return "detail_insuredperson";
     }
 
@@ -146,6 +153,7 @@ public class InsuredPersonsController {
         Insurance insurance = new Insurance();
         model.addAttribute("individualInsurance", insurance);
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(id));
+
         return "create_insurance";
     }
 
@@ -161,13 +169,15 @@ public class InsuredPersonsController {
                                 @ModelAttribute("insuredPerson") InsuredPerson insuredPerson,
                                 @Valid @ModelAttribute("individualInsurance") Insurance insurance,
                                 BindingResult bindingResult) throws InsuredPersonNotFoundException {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(id));
             return "create_insurance";
         }
+
         insuredPersonsService.saveInsurance(insurance, insuredPerson);
         log.info("Insurance saved.");
-        //??? log.info("Insured person id: " + insuredPerson.getId() + " Insurance list size: " + insuredPerson.getAllInsurance().size());
+
         return "redirect:/insuredpersons/detail/{id}";
     }
 
