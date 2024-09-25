@@ -87,6 +87,7 @@ public class InsuredPersonsController {
      */
     @RequestMapping(value = "/insuredpersons/edit/{id}", method = GET)
     public String editInsuredPerson(@PathVariable Long id, Model model) throws InsuredPersonNotFoundException {
+
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(id));
         return "edit_insuredperson";
     }
@@ -105,6 +106,7 @@ public class InsuredPersonsController {
         insuredPerson.setId(id);
         //save updated Insured person object
         insuredPersonsService.updateInsuredPerson(insuredPerson);
+
         return "redirect:/insuredpersons";
     }
 
@@ -118,6 +120,7 @@ public class InsuredPersonsController {
     public String deleteInsuredPerson(@PathVariable Long id) {
 
         insuredPersonsService.deleteInsuredPerson(id);
+
         return "redirect:/insuredpersons";
     }
 
@@ -176,7 +179,6 @@ public class InsuredPersonsController {
         }
 
         insuredPersonsService.saveInsurance(insurance, insuredPerson);
-        log.info("Insurance saved.");
 
         return "redirect:/insuredpersons/detail/{id}";
     }
@@ -191,8 +193,10 @@ public class InsuredPersonsController {
     @RequestMapping(value = "/insuredpersons/detail/{idPerson}/insurance/{idInsurance}", method = GET)
     public String deleteInsurance(@PathVariable Long idPerson,
                                   @PathVariable Long idInsurance) throws InsuredPersonNotFoundException {
+
         insuredPersonsService.getInsuredPersonById(idPerson);
         insuredPersonsService.deleteInsurance(idInsurance);
+
         return "redirect:/insuredpersons/detail/{idPerson}";
     }
 
@@ -206,8 +210,10 @@ public class InsuredPersonsController {
      */
     @RequestMapping(value = "/insuredpersons/detail/{idPerson}/edit/{idInsurance}", method = GET)
     public String editInsurance(@PathVariable Long idPerson, @PathVariable Long idInsurance, Model model) throws InsuredPersonNotFoundException, InsuranceNotFoundException {
+
         model.addAttribute("insuredPerson", insuredPersonsService.getInsuredPersonById(idPerson));
         model.addAttribute("individualInsurance", insuredPersonsService.getInsuranceById(idInsurance));
+
         return "edit_insurance";
     }
 
@@ -222,11 +228,13 @@ public class InsuredPersonsController {
     @RequestMapping(value = "/insuredpersons/detail/{idPerson}/insurance/{idInsurance}", method = POST)
     public String updateInsurance(@PathVariable Long idInsurance, @PathVariable Long idPerson,
                                   @ModelAttribute("individualInsurance") Insurance insurance) throws InsuredPersonNotFoundException, InsuranceNotFoundException {
+
         insuredPersonsService.getInsuredPersonById(idPerson);
         //get Insurance from database by id
         insurance.setId(idInsurance);
         //save updated object of Insurance
         insuredPersonsService.updateInsurance(insurance);
+
         return "redirect:/insuredpersons/detail/{idPerson}";
     }
 

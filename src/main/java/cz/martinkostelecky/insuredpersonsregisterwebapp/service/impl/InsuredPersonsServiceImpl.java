@@ -50,6 +50,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
             throw new EmailAlreadyTakenException("E-mail " + insuredPerson.getEmail() + " již patří jinému pojištěnému.");
         }
         insuredPersonRepository.save(insuredPerson);
+        log.info("Insured person {} saved.", insuredPerson);
     }
 
     /**
@@ -71,7 +72,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @return save of Insured person
      */
     @Override
-    public InsuredPerson updateInsuredPerson(InsuredPerson insuredPerson) throws EmailAlreadyTakenException, InsuredPersonNotFoundException {
+    public void updateInsuredPerson(InsuredPerson insuredPerson) throws EmailAlreadyTakenException, InsuredPersonNotFoundException {
         Optional<InsuredPerson> optionalExistingInsuredPerson = insuredPersonRepository.findById(insuredPerson.getId());
         Boolean existsEmail = insuredPersonRepository.existsByEmail(insuredPerson.getEmail());
         //get existing Insured person and update it if there is any
@@ -89,7 +90,8 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
                 existingInsuredPerson.setEmail(insuredPerson.getEmail());
             }
             existingInsuredPerson.setPhoneNumber(insuredPerson.getPhoneNumber());
-            return insuredPersonRepository.save(existingInsuredPerson);
+            insuredPersonRepository.save(existingInsuredPerson);
+            log.info("Insured person id: {} updated.", insuredPerson.getId());
         } else {
             // Handle the case where the InsuredPerson with the given ID is not found
             throw new InsuredPersonNotFoundException("Pojištěnec s ID: " + insuredPerson.getId() + " nenalezen.");
@@ -104,7 +106,9 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      */
     @Override
     public void deleteInsuredPerson(Long id) {
+
         insuredPersonRepository.deleteById(id);
+        log.info("Insured person id: {} deleted.", id);
     }
 
     /**
@@ -125,6 +129,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
     public void saveInsurance(Insurance insurance, InsuredPerson insuredPerson) {
         Insurance insuranceToSave = new Insurance();
 
+        insuranceToSave.setId(insurance.getId());
         insuranceToSave.setType(insurance.getType());
         insuranceToSave.setAmount(insurance.getAmount());
         insuranceToSave.setSubjectOfInsurance(insurance.getSubjectOfInsurance());
@@ -134,6 +139,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
         insuredPerson.getAllInsurance().add(insuranceToSave);
 
         insuranceRepository.save(insuranceToSave);
+        log.info("Insurance id: {} of insured person id: {} saved.", insurance.getId(), insuredPerson.getId());
     }
 
     /**
@@ -155,7 +161,7 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      * @return save of Insurance
      */
     @Override
-    public Insurance updateInsurance(Insurance insurance) throws InsuranceNotFoundException {
+    public void updateInsurance(Insurance insurance) throws InsuranceNotFoundException {
         Optional<Insurance> optionalExistingInsurance = insuranceRepository.findById(insurance.getId());
 
         if (optionalExistingInsurance.isPresent()) {
@@ -166,7 +172,8 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
             existingInsurance.setSubjectOfInsurance(insurance.getSubjectOfInsurance());
             existingInsurance.setValidFrom(insurance.getValidFrom());
             existingInsurance.setValidTo(insurance.getValidTo());
-            return insuranceRepository.save(existingInsurance);
+            insuranceRepository.save(existingInsurance);
+            log.info("Insurance id: {} updated.", insurance.getId());
         } else {
             // Handle the case where the InsuredPerson with the given ID is not found
             throw new InsuranceNotFoundException("Pojištění s ID: " + insurance.getId() + " nenalezeno.");
@@ -181,7 +188,9 @@ public class InsuredPersonsServiceImpl implements InsuredPersonsService {
      */
     @Override
     public void deleteInsurance(Long id) {
+
         insuranceRepository.deleteById(id);
+        log.info("Insurance id: {} deleted.", id);
     }
 }
 

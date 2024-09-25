@@ -11,12 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
@@ -180,11 +178,17 @@ class InsuredPersonsServiceImplTest {
         ))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
-        InsuredPerson updatedInsuredPerson = insuredPersonsServiceTest.updateInsuredPerson(toUpdateInsuredPerson);
+        insuredPersonsServiceTest.updateInsuredPerson(toUpdateInsuredPerson);
 
         //then
-        verify(insuredPersonRepository).save(eq(updatedInsuredPerson));
+        verify(insuredPersonRepository, times(1)).save(argThat(insuredPerson ->
+                "Adam Novák".equals(insuredPerson.getName()) &&
+                        "Nová 3".equals(insuredPerson.getStreet()) &&
+                        "Brno".equals(insuredPerson.getCity()) &&
+                        "adam@novak.cz".equals(insuredPerson.getEmail()) &&
+                        "111111111".equals(insuredPerson.getPhoneNumber())));
 
+        InsuredPerson updatedInsuredPerson = insuredPersonRepository.findById(1L).get();
         assertThat(updatedInsuredPerson.getId()).isEqualTo(1L);
         assertThat(updatedInsuredPerson.getName()).isEqualTo("Adam Novák");
         assertThat(updatedInsuredPerson.getStreet()).isEqualTo("Nová 3");
@@ -267,8 +271,6 @@ class InsuredPersonsServiceImplTest {
                 "000000000"
         );
 
-        insuredPerson.setAllInsurance(new ArrayList<>());
-
         //when
         insuredPersonsServiceTest.saveInsurance(insurance, insuredPerson);
 
@@ -279,7 +281,14 @@ class InsuredPersonsServiceImplTest {
 
         Insurance capturedInsurance = insuranceArgumentCaptor.getValue();
 
-        assertThat(capturedInsurance).isEqualTo(insurance);
+        assertEquals(capturedInsurance.getId(), insurance.getId());
+        assertEquals(capturedInsurance.getType(), insurance.getType());
+        assertEquals(capturedInsurance.getAmount(), insurance.getAmount());
+        assertEquals(capturedInsurance.getSubjectOfInsurance(), insurance.getSubjectOfInsurance());
+        assertEquals(capturedInsurance.getValidFrom(), insurance.getValidFrom());
+        assertEquals(capturedInsurance.getValidTo(), insurance.getValidTo());
+        assertEquals(capturedInsurance.getInsuredPerson(), insuredPerson);
+        assertEquals(insuredPerson.getAllInsurance().get(0), capturedInsurance);
     }
 
     @Test
@@ -346,10 +355,10 @@ class InsuredPersonsServiceImplTest {
         ))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
-        Insurance updatedInsurance = insuredPersonsServiceTest.updateInsurance(toUpdateInsurance);
+        insuredPersonsServiceTest.updateInsurance(toUpdateInsurance);
 
         //then
-        verify(insuranceRepository).save(argThat(insurance ->
+        verify(insuranceRepository, times(1)).save(argThat(insurance ->
                 "Pojištění majetku".equals(insurance.getType()) &&
                         Integer.valueOf(10000).equals(insurance.getAmount()) &&
                         "Dům".equals(insurance.getSubjectOfInsurance()) &&
@@ -357,6 +366,7 @@ class InsuredPersonsServiceImplTest {
                         LocalDate.of(2024, 1, 31).equals(insurance.getValidTo())
         ));
 
+        Insurance updatedInsurance = insuranceRepository.findById(1L).get();
         assertThat(updatedInsurance.getId()).isEqualTo(1L);
         assertThat(updatedInsurance.getType()).isEqualTo("Pojištění majetku");
         assertThat(updatedInsurance.getAmount()).isEqualTo(10000);

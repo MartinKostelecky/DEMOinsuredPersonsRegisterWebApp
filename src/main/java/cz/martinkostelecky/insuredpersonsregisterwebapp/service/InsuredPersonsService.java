@@ -11,11 +11,11 @@ public interface InsuredPersonsService {
     List<InsuredPerson> getAllInsuredPerson();
     void saveInsuredPerson(InsuredPerson insuredPerson) throws EmailAlreadyTakenException;
     InsuredPerson getInsuredPersonById(Long id) throws InsuredPersonNotFoundException;
-    InsuredPerson updateInsuredPerson(InsuredPerson insuredPerson) throws EmailAlreadyTakenException, InsuredPersonNotFoundException;
+    void updateInsuredPerson(InsuredPerson insuredPerson) throws EmailAlreadyTakenException, InsuredPersonNotFoundException;
     void deleteInsuredPerson(Long id);
     void getAllInsurance();
     void saveInsurance(Insurance insurance, InsuredPerson insuredPerson);
     Insurance getInsuranceById(Long id) throws InsuranceNotFoundException;
-    Insurance updateInsurance(Insurance insurance) throws InsuranceNotFoundException;
+    void updateInsurance(Insurance insurance) throws InsuranceNotFoundException;
     void deleteInsurance(Long id);
 }

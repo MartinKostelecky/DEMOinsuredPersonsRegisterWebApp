@@ -2,6 +2,7 @@ package cz.martinkostelecky.insuredpersonsregisterwebapp.repository;
 
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.Role;
 import cz.martinkostelecky.insuredpersonsregisterwebapp.entity.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,6 +17,11 @@ class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepositoryTest;
+
+    @AfterEach
+    void tearDown() {
+        userRepositoryTest.deleteAll();
+    }
 
     @Test
     void shouldCheckIfUserExistsByEmail() {
